@@ -1,2 +1,2 @@
 # Container Monitoring System
-Web Application for Montoring Containers
+Web Application for Monitoring Containers
