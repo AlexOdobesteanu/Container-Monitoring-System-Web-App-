@@ -3,13 +3,15 @@ import NavBar from './components/Navbar';
 import "./App.css"
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './components/screens/Home'
-import Signin from './components/screens/Login'
+import Signin from './components/screens/SignIn'
 import Containers from './components/screens/Containers'
 import Signup from './components/screens/Signup'
 
 function App() {
   return (
     <BrowserRouter>
+
+
       <NavBar></NavBar>
       <Routes>
         <Route exact path="/" element={<Home></Home>}>
@@ -36,7 +38,8 @@ function App() {
 
       </Routes>
 
-    </BrowserRouter>
+    </BrowserRouter >
+
 
 
   );
