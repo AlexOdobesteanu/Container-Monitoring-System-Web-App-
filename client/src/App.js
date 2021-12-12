@@ -6,6 +6,7 @@ import Home from './components/screens/Home'
 import Signin from './components/screens/SignIn'
 import Containers from './components/screens/Containers'
 import Signup from './components/screens/Signup'
+import AddContainer from './components/screens/AddContainer'
 
 function App() {
   return (
@@ -31,6 +32,12 @@ function App() {
         </Route>
 
         <Route path="/containers" element={<Containers></Containers>}>
+
+
+
+        </Route>
+
+        <Route path="/addcontainer" element={<AddContainer></AddContainer>}>
 
 
 
