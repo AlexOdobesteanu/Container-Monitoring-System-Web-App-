@@ -17,7 +17,7 @@ router.get("/", (req, res) => {
 router.post("/signup", (req, res) => {
     const { name, email, password } = req.body
     if (!email || !password || !name) {
-        return res.status(422).json({ error: "please add all the fields" })
+        return res.status(422).json({ error: "Please add all the fields" })
     }
     User.findOne({ email: email })
         .then((savedUser) => {
@@ -34,7 +34,7 @@ router.post("/signup", (req, res) => {
 
                     user.save()
                         .then(user => {
-                            res.json({ message: "saved succesfully" })
+                            res.json({ message: "Login successfully" })
                         })
                         .catch(err => {
                             console.log(err)
@@ -66,8 +66,8 @@ router.post('/signin', (req, res) => {
                     if (doMatch) {
                         // res.json({ message: "successfully signed in" })
                         const token = jwt.sign({ _id: savedUser._id }, JWT_SECRET)
-                        res.json({ token: token })
-
+                        const { _id, name, email } = savedUser
+                        res.json({ token: token, user: { _id, name, email } })
                     }
                     else {
                         return res.status(422).json({ error: "Invalid Email or password" })

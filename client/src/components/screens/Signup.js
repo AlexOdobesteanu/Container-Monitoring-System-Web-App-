@@ -1,27 +1,40 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import M from 'materialize-css'
 
-const SignIn = () => {
+const SignUp = () => {
+    const navigate = useNavigate()
     const [name, setName] = useState("")
     const [password, setPassword] = useState("")
     const [email, setEmail] = useState("")
 
     const PostData = () => {
-        fetch("http://localhost:3000/signup", {
+        if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
+            M.toast({ html: "Invalid email", classes: "rounded red darken-3" })
+            return
+        }
+        fetch("/signup", {
             method: "post",
             headers:
             {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                name: "",
-                email: "",
-                password: ""
+                name: name,
+                email: email,
+                password: password
             })
-        }).then(res => res.json())
-            .then(data => {
-                console.log(data)
-            })
+        }).then(res => res.json()).then(data => {
+            if (data.error) {
+                M.toast({ html: data.error, classes: 'rounded red darken-3' })
+            }
+            else {
+                M.toast({ html: data.message, classes: 'rounded green' })
+                navigate('/signin')
+            }
+        }).catch(err => {
+            console.log(err)
+        })
     }
 
 
@@ -41,7 +54,7 @@ const SignIn = () => {
 
                 </input>
 
-                <input type="text" placeholder="password" value={password}
+                <input type="password" placeholder="password" value={password}
                     onChange={(e) => setPassword(e.target.value)}>
 
                 </input>
@@ -59,4 +72,4 @@ const SignIn = () => {
 
 }
 
-export default SignIn
+export default SignUp
