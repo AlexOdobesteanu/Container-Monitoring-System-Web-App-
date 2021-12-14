@@ -26,7 +26,7 @@ function encrypt(text) {
 //     return dec;
 // }
 
-router.get('/allcontainers', (req, res) => {
+router.get('/allcontainers', requireLogin, (req, res) => {
     Container.find()
         .populate("ownedBy", "_id name")
         .then(containers => {
@@ -35,7 +35,6 @@ router.get('/allcontainers', (req, res) => {
         .catch(err => {
             console.log(err)
         })
-
 
 })
 
