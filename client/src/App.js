@@ -7,6 +7,7 @@ import Signin from './components/screens/SignIn'
 import Containers from './components/screens/Containers'
 import Signup from './components/screens/Signup'
 import AddContainer from './components/screens/AddContainer'
+import ContainersInfo from './components/screens/ContainersInfo';
 import { reducer, initialState } from './reducers/userReducer'
 
 export const UserContext = createContext()
@@ -52,7 +53,13 @@ const Routing = () => {
 
       </Route>
 
-    </Routes>
+      <Route path="/containersinfo" element={<ContainersInfo></ContainersInfo>}>
+
+      </Route>
+
+
+
+    </Routes >
 
   )
 }

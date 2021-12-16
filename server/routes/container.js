@@ -72,5 +72,20 @@ router.get('/mycontainers', requireLogin, (req, res) => {
 
 })
 
+
+router.post('/info', requireLogin, (req, res) => {
+    const id = req.body.idContainer
+    console.log(id)
+    Container.find({ _id: id })
+        .populate("_id", "host username password")
+        .then(mycontainerInfo => {
+            res.json({ mycontainerInfo })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
+})
+
 module.exports = router
 
