@@ -1,10 +1,17 @@
 const mongoose = require('mongoose')
+const {ObjectId} = mongoose.Schema.Types
 
 const cpuSchema = new mongoose.Schema({
-    usePercentage: {
-        type: Number,
-        required: true,
-    }
+    forContainer:
+        {
+            type: ObjectId,
+            ref: "Container"
+        },
+    usePercentage:
+        {
+            type: String,
+            required: true,
+        }
 })
 
-mongoose.model("Cpu", cpuSchema)
+mongoose.model("cpuModel", cpuSchema)
