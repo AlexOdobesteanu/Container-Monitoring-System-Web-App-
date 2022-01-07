@@ -2,7 +2,7 @@
 import paramiko
 import sys
 
-# hostname = "20.52.136.98"
+# hostname = "51.116.228.59"
 # username = "student"
 # password = "Alex27012000"
 

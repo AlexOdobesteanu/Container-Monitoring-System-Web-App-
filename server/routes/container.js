@@ -20,12 +20,12 @@ function encrypt(text) {
     return crypted;
 }
 
-// function decrypt(text) {
-//     var decipher = crypto.createDecipheriv(algorithm, password, iv)
-//     var dec = decipher.update(text, 'hex', 'utf8')
-//     dec += decipher.final('utf8');
-//     return dec;
-// }
+function decrypt(text) {
+    var decipher = crypto.createDecipheriv(algorithm, password, iv)
+    var dec = decipher.update(text, 'hex', 'utf8')
+    dec += decipher.final('utf8');
+    return dec;
+}
 
 router.get('/allcontainers', requireLogin, (req, res) => {
     Container.find()
@@ -72,6 +72,17 @@ router.get('/mycontainers', requireLogin, (req, res) => {
 
 })
 
+router.post('/allcpu', requireLogin, (req, res) => {
+    cpuModel.find({forContainer: req.body.forContainer})
+        .populate("forContainer", "usePercentage")
+        .then(mycpu => {
+            res.json({mycpu})
+        })
+        .catch(err => {
+            console.log(err)
+        })
+})
+
 
 router.post('/info', requireLogin, (req, res) => {
     const id = req.body.idContainer
@@ -88,19 +99,37 @@ router.post('/info', requireLogin, (req, res) => {
 })
 
 router.post("/cpu", (req, res) => {
-    const usePercentage = req.body.usePercentage
     const forContainer = req.body.forContainer
+    const username = req.body.username;
+    const password = decrypt(req.body.password);
+    const host = req.body.host;
+    const spawn = require("child_process").spawn;
 
-    const cpuM = new cpuModel({
-        forContainer: forContainer,
-        usePercentage: usePercentage
-    })
-    cpuM.save().then(cpuM => {
-        res.json({message: "added succesfully"})
-    })
-        .catch(err => {
-            console.log(err)
+    const pythonProcess = spawn('python', ['./script.py', host.toString(), "" + username.toString(), "" + decrypt(password).toString()]);
+    pythonProcess.stdout.on('data', (data) => {
+        console.log(data.toString())
+        const cpuM = new cpuModel({
+            forContainer: forContainer,
+            usePercentage: data.toString()
         })
+        cpuM.save().then(cpuM => {
+            res.json(data.toString())
+        })
+            .catch(err => {
+                console.log(err)
+            })
+
+    });
+
+    // pythonProcess.stderr.on('data', data => {
+    //     console.error('stderr:${data}');
+    // })
+    //
+    // pythonProcess.on('exit', (code) => {
+    //     console.log('child process exited with code ${code}')
+    // })
+
+
 })
 
 
