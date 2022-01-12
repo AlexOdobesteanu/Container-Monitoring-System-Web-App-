@@ -4,8 +4,9 @@ const mongoose = require('mongoose')
 const Container = mongoose.model("Container")
 const cpuModel = mongoose.model("cpuModel")
 const requireLogin = require('../middleware/requireLogin')
-const {SECRET} = require('../keys')
-const {IV} = require('../keys')
+const { SECRET } = require('../keys')
+const { IV } = require('../keys')
+const e = require('express')
 
 
 var crypto = require('crypto'),
@@ -31,7 +32,7 @@ router.get('/allcontainers', requireLogin, (req, res) => {
     Container.find()
         .populate("ownedBy", "_id name")
         .then(containers => {
-            res.json({containers})
+            res.json({ containers })
         })
         .catch(err => {
             console.log(err)
@@ -41,9 +42,9 @@ router.get('/allcontainers', requireLogin, (req, res) => {
 
 
 router.post('/addcontainer', requireLogin, (req, res) => {
-    const {host, username, password} = req.body
+    const { host, username, password } = req.body
     if (!host || !username || !password) {
-        return res.status(422).json({error: "Please add all the fields"})
+        return res.status(422).json({ error: "Please add all the fields" })
     }
     const container = new Container({
         host: host,
@@ -52,7 +53,7 @@ router.post('/addcontainer', requireLogin, (req, res) => {
         ownedBy: req.user
     })
     container.save().then(result => {
-        res.json({container: result})
+        res.json({ container: result })
     })
         .catch(err => {
             console.log(err)
@@ -61,10 +62,10 @@ router.post('/addcontainer', requireLogin, (req, res) => {
 
 
 router.get('/mycontainers', requireLogin, (req, res) => {
-    Container.find({ownedBy: req.user._id})
+    Container.find({ ownedBy: req.user._id })
         .populate("ownedBy", "host user")
         .then(mycontainer => {
-            res.json({mycontainer})
+            res.json({ mycontainer })
         })
         .catch(err => {
             console.log(err)
@@ -73,10 +74,10 @@ router.get('/mycontainers', requireLogin, (req, res) => {
 })
 
 router.post('/allcpu', requireLogin, (req, res) => {
-    cpuModel.find({forContainer: req.body.forContainer})
+    cpuModel.find({ forContainer: req.body.forContainer })
         .populate("forContainer", "usePercentage")
         .then(mycpu => {
-            res.json({mycpu})
+            res.json({ mycpu })
         })
         .catch(err => {
             console.log(err)
@@ -87,10 +88,10 @@ router.post('/allcpu', requireLogin, (req, res) => {
 router.post('/info', requireLogin, (req, res) => {
     const id = req.body.idContainer
     console.log(id)
-    Container.find({_id: id})
+    Container.find({ _id: id })
         .populate("_id", "host username password")
         .then(mycontainerInfo => {
-            res.json({mycontainerInfo})
+            res.json({ mycontainerInfo })
         })
         .catch(err => {
             console.log(err)
@@ -129,6 +130,26 @@ router.post("/cpu", (req, res) => {
     //     console.log('child process exited with code ${code}')
     // })
 
+
+})
+
+router.delete("/deletecontainer/:containerId", requireLogin, (req, res) => {
+    console.log(req.params.containerId)
+    Container.findOne({ _id: req.params.containerId })
+        .populate("_id", "_id")
+        .exec((err, container) => {
+            if (err || !container) {
+                return res.status(422).json({ error: err })
+            }
+            else {
+                container.remove()
+                    .then(result => {
+                        res.json(result)
+                    }).catch(err => {
+                        console.log(err)
+                    })
+            }
+        })
 
 })
 
