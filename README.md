@@ -1,2 +1,2 @@
 # Container Monitoring System
-Web Application for Monitoring Containers
+Web Application for Monitoring Docker Containers in Kubernetes Clusters

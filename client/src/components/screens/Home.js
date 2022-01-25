@@ -3,7 +3,6 @@ import { Bar } from 'react-chartjs-2'
 import { Chart as ChartJS } from 'chart.js/auto'
 import { Chart } from 'react-chartjs-2'
 import { } from "materialize-css"
-import my_image from './image.png'
 import { Parallax, Background } from 'react-parallax';
 
 const Home = () => {

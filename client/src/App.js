@@ -1,14 +1,15 @@
-import React, {useEffect, createContext, useReducer} from 'react';
+import React, { useEffect, createContext, useReducer } from 'react';
 import NavBar from './components/Navbar';
 import "./App.css"
-import {BrowserRouter, Route, Routes, useNavigate} from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
 import Home from './components/screens/Home'
 import Signin from './components/screens/SignIn'
 import Containers from './components/screens/Containers'
 import Signup from './components/screens/Signup'
 import AddContainer from './components/screens/AddContainer'
 import ContainersInfo from './components/screens/ContainersInfo';
-import {reducer, initialState} from './reducers/userReducer'
+import Cluster from './components/screens/Cluster'
+import { reducer, initialState } from './reducers/userReducer'
 
 export const UserContext = createContext()
 
@@ -53,8 +54,12 @@ const Routing = () => {
 
             </Route>
 
+            <Route path="/cluster" element={<Cluster></Cluster>}>
 
-        </Routes>
+            </Route>
+
+
+        </Routes >
 
     )
 }
@@ -62,7 +67,7 @@ const Routing = () => {
 function App() {
     const [state, dispatch] = useReducer(reducer, initialState)
     return (
-        <UserContext.Provider value={{state, dispatch}}>
+        <UserContext.Provider value={{ state, dispatch }}>
             <BrowserRouter>
 
 

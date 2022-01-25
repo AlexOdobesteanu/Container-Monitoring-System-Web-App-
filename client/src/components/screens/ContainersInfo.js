@@ -152,6 +152,9 @@ const ContainersInfo = () => {
                 console.log(result.mycpu)
                 setallCpu(result.mycpu)
                 for (let i = 0; i < result.mycpu.length; i++) {
+                    if (parseFloat(result.mycpu[i].usePercentage.substring(0, result.mycpu[i].usePercentage.length - 4)) > parseFloat(0.6)) {
+                        M.toast({ html: 'Overheated cpu', classes: 'rounded red darken-3' })
+                    }
                     arr.push(parseFloat(result.mycpu[i].usePercentage.substring(0, result.mycpu[i].usePercentage.length - 4)))
                     arr_2.push(i)
                 }

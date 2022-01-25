@@ -1,9 +1,9 @@
-import React, {useContext} from 'react'
-import {Link, useNavigate} from 'react-router-dom'
-import {UserContext} from '../App'
+import React, { useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { UserContext } from '../App'
 
 const NavBar = () => {
-    const {state, dispatch} = useContext(UserContext)
+    const { state, dispatch } = useContext(UserContext)
     const navigate = useNavigate()
 
     const renderList = () => {
@@ -13,16 +13,18 @@ const NavBar = () => {
             return [
                 <li><Link to="/addcontainer">Add Container</Link></li>,
                 <li><Link to="/containers">All Containers</Link></li>,
+                <li><Link to="/cluster">Clusters</Link></li>,
                 <li>
                     <button class="btn waves-effect waves-light #c62828 red darken-3"
-                            onClick={() => {
-                                localStorage.clear()
-                                dispatch({type: "CLEAR"})
-                                navigate('/signin')
-                            }}>
+                        onClick={() => {
+                            localStorage.clear()
+                            dispatch({ type: "CLEAR" })
+                            navigate('/signin')
+                        }}>
                         Logout
                     </button>
                 </li>
+
 
             ]
 
