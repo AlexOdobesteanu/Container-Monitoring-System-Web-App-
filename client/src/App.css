@@ -11,6 +11,7 @@ Link{
 
 .mycard
 {
+  
   margin-top: 20px;
 }
 
@@ -22,18 +23,36 @@ Link{
   max-width: 500px;
 }
 
+
 .input-field input[type=text]:focus
 {
-  border-bottom: 1px solid rgb(50, 194, 50) !important;
-  box-shadow: 0 1px 0 0 rgb(50, 194, 50) !important;
+  border-bottom: 1px solid rgb(76, 175, 80) !important;
+  box-shadow: 0 1px 0 0 rgb(76, 175, 80) !important;
+  caret-color:whitesmoke;
+  color:whitesmoke!important;
 }
 
 .input-field input[type=password]:focus
 {
-  border-bottom: 1px solid rgb(50, 194, 50) !important;
-  box-shadow: 0 1px 0 0 rgb(50, 194, 50) !important;
+  border-bottom: 1px solid rgb(76, 175, 80) !important;
+  box-shadow: 0 1px 0 0 rgb(76, 175, 80) !important;
+  caret-color:whitesmoke;
+  color:whitesmoke!important;
 }
 
+.input-field input[type=text]
+{
+  
+  caret-color:whitesmoke;
+  color:whitesmoke!important;
+}
+
+.input-field input[type=password]
+{
+  
+  caret-color:whitesmoke;
+  color:whitesmoke!important;
+}
 
 
 .login-link
@@ -46,4 +65,45 @@ Link{
   top:60px !important ;
   right:20px !important;
   left:auto !important;
+}
+
+.nav-wrapper
+{
+  background-color: rgb(40,44,52)!important;
+  border-bottom: 3px solid rgb(62, 68, 82) !important;
+  box-shadow:0!important;
+}
+
+.nav-elem
+{
+  border-right:1px solid rgb(62, 68, 82) !important;
+  border-left: 1px solid rgb(62, 68, 82) !important;
+  box-shadow:0!important;
+}
+
+.auth-card
+{
+  background-color: rgb(40,44,52)!important;
+  border:3px solid rgb(62, 68, 82) !important;
+}
+
+.card-panel
+{
+  background-color: rgb(76, 175, 80)!important;
+}
+
+.card
+{
+  background-color: rgb(40,44,52)!important;
+  border:3px solid rgb(62, 68, 82) !important;
+}
+
+#white-text
+{
+  color:whitesmoke;
+}
+
+#green-text
+{
+  color:rgb(76, 175, 80);
 }

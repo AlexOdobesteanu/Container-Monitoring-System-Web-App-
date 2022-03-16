@@ -9,11 +9,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
+    "@mui/material": "^5.5.1",
+    "@mui/styled-engine-sc": "^5.4.2",
+    "axios": "^0.26.1",
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.1",
+    "fs": "*",
+    "js-file-download": "^0.4.12",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.14",
-    "mongoose-encryption": "^2.1.2"
+    "mongoose-encryption": "^2.1.2",
+    "node-yaml": "^4.0.1",
+    "styled-components": "^5.3.3"
   }
 }

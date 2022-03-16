@@ -1,13 +1,15 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const yaml = require('js-yaml');
+var fs = require('fs')
 const Container = mongoose.model("Container")
 const cpuModel = mongoose.model("cpuModel")
 const requireLogin = require('../middleware/requireLogin')
 const { SECRET } = require('../keys')
 const { IV } = require('../keys')
 const e = require('express')
-
+const bcrypt = require('bcryptjs')
 
 var crypto = require('crypto'),
     algorithm = 'aes-256-ctr',
@@ -151,6 +153,86 @@ router.delete("/deletecontainer/:containerId", requireLogin, (req, res) => {
             }
         })
 
+})
+
+// router.post("/cpu", (req, res) => {
+//     const forContainer = req.body.forContainer
+//     const username = req.body.username;
+//     const password = decrypt(req.body.password);
+//     const host = req.body.host;
+//     const spawn = require("child_process").spawn;
+
+//     const pythonProcess = spawn('python', ['./script.py', host.toString(), "" + username.toString(), "" + decrypt(password).toString()]);
+//     pythonProcess.stdout.on('data', (data) => {
+//         console.log(data.toString())
+//         const cpuM = new cpuModel({
+//             forContainer: forContainer,
+//             usePercentage: data.toString()
+//         })
+//         cpuM.save().then(cpuM => {
+//             res.json(data.toString())
+//         })
+//             .catch(err => {
+//                 console.log(err)
+//             })
+
+//     });
+
+router.post("/dockersupp", requireLogin, (req, res) => {
+    const hostname = req.body.hostname
+    const caDays = req.body.caDays
+    const certDays = req.body.certDays
+    const certsPass = req.body.certsPass
+    const nickname = req.body.nickname
+    const id = req.user._id.toString()
+
+
+    const dir = './configFiles/' + id
+
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir)
+    }
+
+    const dir_aux = dir + '/' + nickname
+    if (!fs.existsSync(dir_aux)) {
+        fs.mkdirSync(dir_aux)
+    }
+    else {
+        return res.status(422).json({ error: "nickname already used" })
+    }
+
+    let data = {
+        version: "3.4",
+        services: {
+            'image': 'kekru/docker-remote-api-tls:v0.4.0',
+            ports: [
+                '2376:443'
+            ],
+            environment: [
+                'CREATE_CERTS_WITH_PW=' + certsPass,
+                'CERT_EXPIRATION_DAYS=' + certDays,
+                'CA_EXPIRATION_DAYS=' + caDays,
+                'CERT_HOSTNAME=' + hostname
+            ],
+            volumes: [
+                '/data/certs',
+                '/var/run/docker.sock:/var/run/docker.sock:ro'
+            ]
+        }
+    }
+
+    const dir_yml = dir_aux + '/docker-compose.yml'
+    let yamlStr = yaml.safeDump(data)
+    fs.writeFileSync(dir_yml, yamlStr, 'utf8')
+    return res.status(201).json({ succes: "created" })
+})
+
+router.get("/download", requireLogin, (req, res) => {
+    let nick = req.query.nickname
+    console.log("aaa")
+    console.log(nick)
+    const id = req.user._id.toString()
+    res.download("./configFiles/" + id + "/" + nick + "/docker-compose.yml")
 })
 
 

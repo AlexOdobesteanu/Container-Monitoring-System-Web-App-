@@ -41,7 +41,7 @@ const SignUp = () => {
     return (
         <div className="mycard">
             <div className="card auth-card input-field">
-                <h2 className='brand-logo'>Container Monitoring</h2>
+                <h2 className='brand-logo' style={{ color: 'whitesmoke' }}>Container Monitoring</h2>
 
                 <input type="text" placeholder="name" value={name}
                     onChange={(e) => setName(e.target.value)}>
@@ -63,7 +63,7 @@ const SignUp = () => {
                     Sign UP
                 </button>
                 <h5>
-                    <Link to="/signin">Already have an account ?</Link>
+                    <Link to="/signin" style={{ color: "whitesmoke" }}> Already have an account ?</Link>
                 </h5>
 
             </div>

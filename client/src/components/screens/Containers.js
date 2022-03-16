@@ -6,6 +6,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import { HashLoader } from 'react-spinners';
 import { } from 'materialize-css'
 import M from 'materialize-css'
+import "../../App.css"
 
 const Containers = () => {
     const style = { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
@@ -62,14 +63,14 @@ const Containers = () => {
                                 </div>
                                 <div class="card-stacked">
                                     <div class="card-content">
-                                        <p>
+                                        <p id='white-text'>
                                             Type: Container
                                         </p>
-                                        <p>IP Address: {item.host}</p>
-                                        <p>Username for Container: {item.username}</p>
+                                        <p id='white-text'>IP Address: {item.host}</p>
+                                        <p id='white-text'>Username for Container: {item.username}</p>
                                     </div>
                                     <div class="card-action">
-                                        <Link to="/containersinfo"
+                                        <Link to="/containersinfo" id='green-text'
                                             state={{
                                                 idContainer: item._id,
                                                 host: item.host,
@@ -80,14 +81,14 @@ const Containers = () => {
                                     </div>
                                 </div>
                                 <h5>
-                                    <i className="material-icons" onClick={() => deleteContainer(item._id)}>delete</i>
+                                    <i className="medium material-icons white-text " style={{ fontSize: '30px', cursor: 'pointer' }} onClick={() => deleteContainer(item._id)}>delete</i>
                                 </h5>
                             </div>
                         )
                     })
                 }
 
-            </div>) : (<div style={style}><HashLoader speedMultiplier={2}></HashLoader></div>)}
+            </div>) : (<div style={style}><HashLoader color='white' speedMultiplier={2}></HashLoader></div>)}
 
         </>
 

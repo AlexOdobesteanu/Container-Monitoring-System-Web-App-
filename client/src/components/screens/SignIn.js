@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import { UserContext } from '../../App';
 import { Link, useNavigate } from 'react-router-dom';
 import M from 'materialize-css'
+import "../../App.css"
 
 const SignIn = () => {
     const { state, dispatch } = useContext(UserContext)
@@ -44,7 +45,7 @@ const SignIn = () => {
     return (
         <div className="mycard">
             <div className="card auth-card input-field">
-                <h2 className='brand-logo'>Container Monitoring</h2>
+                <h2 className='brand-logo' style={{ color: 'whitesmoke' }}>Container Monitoring</h2>
 
                 <input type="text" placeholder="email" value={email}
                     onChange={(e) => setEmail(e.target.value)}>
@@ -60,7 +61,7 @@ const SignIn = () => {
                     Login
                 </button>
                 <h5>
-                    <Link color='black' to="/signup">Don't have an account yet ?</Link>
+                    <Link style={{ color: "whitesmoke" }} to="/signup">Don't have an account yet ?</Link>
                 </h5>
 
             </div>

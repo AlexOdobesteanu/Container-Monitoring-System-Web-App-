@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import M from 'materialize-css'
+import "../../App.css"
 const { SECRET } = require('../../keys')
 const { IV } = require('../../keys')
+
 
 
 var crypto = require('crypto'),

@@ -33,7 +33,7 @@ function useInterval(callback, delay) {
 }
 
 const ContainersInfo = () => {
-    const style = { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
+    const style = { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "whitesmoke" };
     let arr = []
     let arr_2 = []
     const [loading, setLoading] = useState(false)
@@ -152,9 +152,9 @@ const ContainersInfo = () => {
                 console.log(result.mycpu)
                 setallCpu(result.mycpu)
                 for (let i = 0; i < result.mycpu.length; i++) {
-                    if (parseFloat(result.mycpu[i].usePercentage.substring(0, result.mycpu[i].usePercentage.length - 4)) > parseFloat(0.6)) {
-                        M.toast({ html: 'Overheated cpu', classes: 'rounded red darken-3' })
-                    }
+                    // if (parseFloat(result.mycpu[i].usePercentage.substring(0, result.mycpu[i].usePercentage.length - 4)) > parseFloat(0.6)) {
+                    //     M.toast({ html: 'Overheated cpu', classes: 'rounded red darken-3' })
+                    // }
                     arr.push(parseFloat(result.mycpu[i].usePercentage.substring(0, result.mycpu[i].usePercentage.length - 4)))
                     arr_2.push(i)
                 }
@@ -200,7 +200,11 @@ const ContainersInfo = () => {
 
 
     return (
-        <>
+        <div style={{
+            background: "rgb(40,44,52)",
+            minHeight: '150vh',
+            overflow: 'auto'
+        }}>
             <div class="col s12 m7" style={{
                 margin: "50px auto",
                 maxWidth: "900px",
@@ -215,11 +219,11 @@ const ContainersInfo = () => {
                                     </div>
                                     <div class="card-stacked">
                                         <div class="card-content">
-                                            <p>
+                                            <p id='white-text'>
                                                 Type: Container
                                             </p>
-                                            <p>IP Address: {item.host}</p>
-                                            <p>Username for Container: {item.username}</p>
+                                            <p id='white-text'>IP Address: {item.host}</p>
+                                            <p id='white-text'>Username for Container: {item.username}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -264,14 +268,14 @@ const ContainersInfo = () => {
                 position: 'absolute', left: '50%', top: '80%',
                 transform: 'translate(-50%, -50%)'
             }}>
-                <br>
+                {/* <br>
                 </br>
                 <br>
                 </br>
                 <br>
                 </br>
                 <br>
-                </br>
+                </br> */}
                 {loading ? (
                     <div>
                         <Line data={{
@@ -288,10 +292,10 @@ const ContainersInfo = () => {
                                 data: GraphData
                             }]
                         }} height={400} width={600} />
+                        {/* <br></br>
                         <br></br>
                         <br></br>
-                        <br></br>
-                        <br></br>
+                        <br></br> */}
                         <Bar data={{
                             labels: counterData,
                             datasets: [{
@@ -307,11 +311,11 @@ const ContainersInfo = () => {
                             }]
                         }} height={400} width={600} />
 
-                    </div>) : (<div style={style}><HashLoader speedMultiplier={2}></HashLoader></div>)}
+                    </div>) : (<div style={style}><HashLoader color='white' speedMultiplier={2}></HashLoader></div>)}
 
 
             </div>
-        </>
+        </div>
 
 
     )

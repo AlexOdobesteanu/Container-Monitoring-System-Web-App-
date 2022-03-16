@@ -1,6 +1,6 @@
 import React, { useEffect, createContext, useReducer } from 'react';
 import NavBar from './components/Navbar';
-import "./App.css"
+import "./App.css";
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
 import Home from './components/screens/Home'
 import Signin from './components/screens/SignIn'
@@ -8,6 +8,7 @@ import Containers from './components/screens/Containers'
 import Signup from './components/screens/Signup'
 import AddContainer from './components/screens/AddContainer'
 import ContainersInfo from './components/screens/ContainersInfo';
+import DockerSupport from './components/screens/DockerSupport';
 import Cluster from './components/screens/Cluster'
 import { reducer, initialState } from './reducers/userReducer'
 
@@ -17,13 +18,14 @@ const Routing = () => {
     const navigate = useNavigate();
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"))
-        if (user) {
-            navigate('/')
-        } else {
-            navigate('/signin')
-        }
+        // if (user) {
+        //     navigate('/')
+        // } else {
+        //     navigate('/signin')
+        // }
     }, [])
     return (
+
         <Routes>
 
             <Route exact path="/" element={<Home></Home>}>
@@ -58,6 +60,11 @@ const Routing = () => {
 
             </Route>
 
+            <Route path="/dockersupport" element={<DockerSupport></DockerSupport>}>
+
+
+            </Route>
+
 
         </Routes >
 
@@ -67,16 +74,22 @@ const Routing = () => {
 function App() {
     const [state, dispatch] = useReducer(reducer, initialState)
     return (
-        <UserContext.Provider value={{ state, dispatch }}>
-            <BrowserRouter>
+        <div style={{
+            background: "rgb(40,44,52)",
+            minHeight: '100vh',
+            overflow: 'auto'
+        }}>
+            <UserContext.Provider value={{ state, dispatch }}>
+                <BrowserRouter>
 
 
-                <NavBar></NavBar>
-                <Routing></Routing>
+                    <NavBar></NavBar>
+                    <Routing></Routing>
 
 
-            </BrowserRouter>
-        </UserContext.Provider>
+                </BrowserRouter>
+            </UserContext.Provider>
+        </div >
 
 
     );
