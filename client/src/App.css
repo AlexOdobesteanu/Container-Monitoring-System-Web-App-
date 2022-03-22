@@ -98,6 +98,12 @@ Link{
   border:3px solid rgb(62, 68, 82) !important;
 }
 
+.main-logo
+{
+  height: 100px;
+  width: 100px;
+}
+
 #white-text
 {
   color:whitesmoke;

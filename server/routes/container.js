@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const yaml = require('js-yaml');
+const multer = require('multer')
 var fs = require('fs')
 const Container = mongoose.model("Container")
 const cpuModel = mongoose.model("cpuModel")
@@ -10,6 +11,7 @@ const { SECRET } = require('../keys')
 const { IV } = require('../keys')
 const e = require('express')
 const bcrypt = require('bcryptjs')
+const path = require('path')
 
 var crypto = require('crypto'),
     algorithm = 'aes-256-ctr',
@@ -204,20 +206,23 @@ router.post("/dockersupp", requireLogin, (req, res) => {
     let data = {
         version: "3.4",
         services: {
-            'image': 'kekru/docker-remote-api-tls:v0.4.0',
-            ports: [
-                '2376:443'
-            ],
-            environment: [
-                'CREATE_CERTS_WITH_PW=' + certsPass,
-                'CERT_EXPIRATION_DAYS=' + certDays,
-                'CA_EXPIRATION_DAYS=' + caDays,
-                'CERT_HOSTNAME=' + hostname
-            ],
-            volumes: [
-                '/data/certs',
-                '/var/run/docker.sock:/var/run/docker.sock:ro'
-            ]
+            'remote-api': {
+                image: 'kekru/docker-remote-api-tls:v0.4.0',
+                ports: [
+                    '2376:443'
+                ],
+                environment: [
+                    'CREATE_CERTS_WITH_PW=' + certsPass,
+                    'CERT_EXPIRATION_DAYS=' + certDays,
+                    'CA_EXPIRATION_DAYS=' + caDays,
+                    'CERT_HOSTNAME=' + hostname
+                ],
+                volumes: [
+                    '/data/certs',
+                    '/var/run/docker.sock:/var/run/docker.sock:ro'
+                ]
+
+            }
         }
     }
 
@@ -229,10 +234,32 @@ router.post("/dockersupp", requireLogin, (req, res) => {
 
 router.get("/download", requireLogin, (req, res) => {
     let nick = req.query.nickname
-    console.log("aaa")
-    console.log(nick)
+    // console.log("aaa")
+    // console.log(nick)
     const id = req.user._id.toString()
     res.download("./configFiles/" + id + "/" + nick + "/docker-compose.yml")
+})
+
+
+router.post("/multiple", requireLogin, (req, res) => {
+    console.log("aaa")
+    const files = req.files.files
+    console.log(files)
+    console.log(req.query)
+
+    if (files.length != 3) {
+        return res.status(422).json({ error: "Upload key.pem, cert.pem, ca.pem" })
+    }
+    else {
+        files.forEach(file => {
+            // console.log(file)
+            const savePath = "./configFiles/" + req.query.id + '/' + req.query.nickname + '/' + file.name
+            file.mv(savePath)
+        })
+        return res.status(201).json({ succes: "Uploaded successfully" })
+    }
+
+
 })
 
 

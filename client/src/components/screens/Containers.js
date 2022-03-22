@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useNavigate } from 'react'
-import logo from '../../container.jpg';
 import { Link } from 'react-router-dom';
 import { Bar } from 'chart.js'
 import Spinner from 'react-bootstrap/Spinner'
@@ -58,9 +57,6 @@ const Containers = () => {
                     data.map(item => {
                         return (
                             <div class="card horizontal" key={item._id}>
-                                <div class="card-image">
-                                    <img src={logo} />
-                                </div>
                                 <div class="card-stacked">
                                     <div class="card-content">
                                         <p id='white-text'>

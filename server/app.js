@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const fileUpload = require('express-fileupload')
 const app = express()
 
 const PORT = 5000
@@ -28,6 +29,10 @@ require('./models/cpu')
 
 app.use(express.json())
 app.use(cors())
+app.use(fileUpload())
+
+
+
 app.use(require("./routes/auth"))
 app.use(require('./routes/container'))
 

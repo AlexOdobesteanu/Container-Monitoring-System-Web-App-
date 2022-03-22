@@ -1,6 +1,8 @@
 import React, { useContext, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { UserContext } from '../App'
+import logo from '../logos/mylogo.png'
+
 import "../App.css"
 
 const NavBar = () => {
@@ -53,7 +55,8 @@ const NavBar = () => {
     return (
         <nav>
             <div className="nav-wrapper">
-                <Link to="/" className="brand-logo left" id="white-text">Container Monitoring</Link>
+                <Link to="/" className="brand-logo left" id="white-text"><img src={logo} className='main-logo'></img></Link>
+
                 <ul id="nav-mobile" className="right">
                     {renderList()}
                 </ul>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../../App.css"
 import axios from 'axios'
 import fileDownload from 'js-file-download'
@@ -14,6 +14,39 @@ const DockerSupport = () => {
     const [certHostname, setCertHostname] = useState("")
     const [nickname, setNickname] = useState("")
     const [showDownload, setShowDownload] = useState(false)
+    const [showUpload, setShowUpload] = useState(false)
+    const [multipleFiles, setMultipleFiles] = useState([])
+
+    const multipleFileChange = (e) => {
+        setMultipleFiles(e.target.files)
+    }
+
+    const uploadMultipleFiles = (e) => {
+        e.preventDefault()
+        const data = new FormData()
+        for (let i = 0; i < multipleFiles.length; i++) {
+            data.append('files', multipleFiles[i])
+        }
+
+        const headers = {
+            "Authorization": "Bearer " + localStorage.getItem("jwt")
+        }
+
+        const id = JSON.parse(localStorage.getItem("user"))._id
+        const params = {
+            id: id,
+            nickname: nickname
+        }
+
+        axios.post("/multiple", data,
+            {
+                headers: headers,
+                params: params
+            })
+            .then((res) => {
+                console.log(res.status)
+            })
+    }
 
     const download = (e) => {
         e.preventDefault()
@@ -32,6 +65,7 @@ const DockerSupport = () => {
         }).then((res) => {
             console.log(res)
             fileDownload(res.data, "docker-compose.yml")
+            setShowUpload(true)
         })
 
 
@@ -122,20 +156,47 @@ const DockerSupport = () => {
             <br></br>
             <br></br>
             <br></br>
-            <br></br>
-            <br></br>
             {showDownload ? (
                 <div>
                     <div class="card-panel ">
                         <span class="white-text">
-                            docker-compose.yml
+                            <p>docker-compose.yml</p>
+                            Download the config file and run it
+                            on your system.
                         </span>
                     </div>
                     <br></br>
-                    <i className="material-icons green-text " style={{
+                    {/* <i className="material-icons green-text " style={{
                         fontSize: '50px', cursor: 'pointer', textAlign: 'center'
-                    }} onClick={(e) => download(e)}>file_download</i>
+                    }} onClick={(e) => download(e)}>file_download</i> */}
+
+                    <button class="btn waves-effect waves-light green" onClick={(e) => download(e)}>
+                        <i class="material-icons center">file_download</i>
+                    </button>
                 </div>) : (<div></div>)}
+
+            <br></br>
+            <br></br>
+            <br></br>
+
+            {showUpload ? (<div>
+                <form action="#" method="POST" onSubmit={uploadMultipleFiles}>
+                    <div class='file-field input-field'>
+                        <div class='btn green'>
+                            <span>File</span>
+                            <input type="file" onChange={multipleFileChange} accept='.pem' multiple />
+                        </div>
+                        <div class='file-path-wrapper'>
+                            <input class="file-path validate" type="text" placeholder="Upload key.pem, cert.pem, ca.pem" />
+                        </div>
+                    </div>
+                    {/* <input type="submit" className='waves-effect waves-light btn green' value="Upload your files" /> */}
+                    <button class="btn waves-effect waves-light green" type="submit" name="action">
+                        <i class="material-icons center">file_upload</i>
+                    </button>
+                </form>
+            </div>) : (<div></div>)}
+
 
         </div >
     )

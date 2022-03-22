@@ -2,7 +2,7 @@ var fs = require('fs')
 var Docker = require('dockerode')
 
 var mydocker = new Docker({
-    host: a,
+    host: 'https://remote-api.127-0-0-1.nip.io',
     port: 2376,
     ca: fs.readFileSync('ca.pem'),
     cert: fs.readFileSync('cert.pem'),
@@ -22,7 +22,7 @@ console.log("a")
 
 
 
-var container = mydocker.getContainer('3eefbf7c4b44')
+var container = mydocker.getContainer('4852cbe14deb')
 container.inspect(function (err, data) {
     console.log(err)
     console.log(data);
