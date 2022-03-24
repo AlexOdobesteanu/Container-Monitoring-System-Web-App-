@@ -6,6 +6,7 @@ const multer = require('multer')
 var fs = require('fs')
 const Container = mongoose.model("Container")
 const cpuModel = mongoose.model("cpuModel")
+const Cluster = mongoose.model("Cluster")
 const requireLogin = require('../middleware/requireLogin')
 const { SECRET } = require('../keys')
 const { IV } = require('../keys')
@@ -59,6 +60,32 @@ router.post('/addcontainer', requireLogin, (req, res) => {
     container.save().then(result => {
         res.json({ container: result })
     })
+        .catch(err => {
+            console.log(err)
+        })
+})
+
+router.post('/clusteradd', requireLogin, (req, res) => {
+    const { domainName, nickname } = req.body
+    const cluster = new Cluster({
+        domainName: domainName,
+        nickname: nickname,
+        ownedBy: req.user
+    })
+    cluster.save().then(result => {
+        res.json({ cluster: result })
+    })
+        .catch(err => {
+            console.log(err)
+        })
+})
+
+router.post('/clusters', requireLogin, (req, res) => {
+    Cluster.find({ ownedBy: req.user._id })
+        .populate("ownedBy", "domainName nickname")
+        .then(mycluster => {
+            res.json({ mycluster })
+        })
         .catch(err => {
             console.log(err)
         })
@@ -245,6 +272,7 @@ router.post("/multiple", requireLogin, (req, res) => {
     console.log("aaa")
     const files = req.files.files
     console.log(files)
+    console.log(req.user._id.toString())
     console.log(req.query)
 
     if (files.length != 3) {
@@ -253,13 +281,11 @@ router.post("/multiple", requireLogin, (req, res) => {
     else {
         files.forEach(file => {
             // console.log(file)
-            const savePath = "./configFiles/" + req.query.id + '/' + req.query.nickname + '/' + file.name
+            const savePath = "./configFiles/" + req.user._id.toString() + '/' + req.query.nickname + '/' + file.name
             file.mv(savePath)
         })
         return res.status(201).json({ succes: "Uploaded successfully" })
     }
-
-
 })
 
 

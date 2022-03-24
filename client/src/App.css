@@ -113,3 +113,17 @@ Link{
 {
   color:rgb(76, 175, 80);
 }
+
+.collapsible-header
+{
+  background-color: rgb(40,44,52)!important;
+  border:3px solid rgb(62, 68, 82) !important;
+  color:white
+}
+
+.collapsible-body
+{
+  background-color: rgb(62, 68, 82) !important;
+  border:3px solid rgb(62, 68, 82) !important;
+  color:white
+}

@@ -32,9 +32,7 @@ const DockerSupport = () => {
             "Authorization": "Bearer " + localStorage.getItem("jwt")
         }
 
-        const id = JSON.parse(localStorage.getItem("user"))._id
         const params = {
-            id: id,
             nickname: nickname
         }
 
@@ -43,9 +41,13 @@ const DockerSupport = () => {
                 headers: headers,
                 params: params
             })
-            .then((res) => {
-                console.log(res.status)
+            .then(result => {
+                console.log(result)
+                if (result.data['succes']) {
+                    M.toast({ html: 'Uploaded successfully', classes: 'rounded green' })
+                }
             })
+            .catch(err => M.toast({ html: 'Incorrect files chosen', classes: 'rounded red darken-3' }))
     }
 
     const download = (e) => {
@@ -76,6 +78,10 @@ const DockerSupport = () => {
             M.toast({ html: "Empty fields", classes: "rounded red darken-3" })
             return
         }
+        if (!caDays || !certDays) {
+            caDays = '900'
+            certDays = '365'
+        }
         fetch("/dockersupp", {
             method: "post",
             headers:
@@ -98,6 +104,29 @@ const DockerSupport = () => {
                 }
                 if (result.succes) {
                     M.toast({ html: 'Generated yml successfully', classes: 'rounded green' })
+                    fetch("/clusteradd", {
+                        method: "post",
+                        headers:
+                        {
+                            "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            domainName: certHostname,
+                            nickname: nickname
+                        })
+                    }).then(res => res.json())
+                        .then(data => {
+                            if (data.error) {
+                                M.toast({ html: data.error, classes: 'rounded red darken-3' })
+                            }
+                            else {
+                                M.toast({ html: "Added info successfully", classes: 'rounded green' })
+                            }
+                        }).catch(err => {
+                            console.log(err)
+                        })
+
                     setShowDownload(true)
                 }
             })

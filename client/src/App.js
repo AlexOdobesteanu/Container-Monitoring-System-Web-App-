@@ -9,7 +9,7 @@ import Signup from './components/screens/Signup'
 import AddContainer from './components/screens/AddContainer'
 import ContainersInfo from './components/screens/ContainersInfo';
 import DockerSupport from './components/screens/DockerSupport';
-import Cluster from './components/screens/Cluster'
+import AllClusters from './components/screens/AllClusters';
 import { reducer, initialState } from './reducers/userReducer'
 
 export const UserContext = createContext()
@@ -56,9 +56,12 @@ const Routing = () => {
 
             </Route>
 
-            <Route path="/cluster" element={<Cluster></Cluster>}>
+            <Route path="/allclusters" element={<AllClusters></AllClusters>}>
+
 
             </Route>
+
+
 
             <Route path="/dockersupport" element={<DockerSupport></DockerSupport>}>
 

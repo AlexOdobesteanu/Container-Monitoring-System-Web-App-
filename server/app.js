@@ -25,6 +25,7 @@ mongoose.connection.on('error', (err) => {
 require('./models/user')
 require('./models/container')
 require('./models/cpu')
+require('./models/cluster')
 
 
 app.use(express.json())

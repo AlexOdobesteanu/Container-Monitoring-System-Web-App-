@@ -20,8 +20,14 @@ const NavBar = () => {
             return [
                 <li className='nav-elem'><Link to="/addcontainer" id="white-text">Add Container</Link></li>,
                 <li className='nav-elem'><Link to="/containers" id="white-text">All Containers</Link></li>,
-                <li className='nav-elem'><Link to="/cluster" id="white-text">Clusters</Link></li>,
                 <li className='nav-elem'><Link to="/dockersupport" id="white-text">Docker Support</Link></li>,
+                <li className='nav-elem'>
+                    <Link to="/allclusters" id="white-text">
+                        <i className="material-icons white-text " style={{ fontSize: '25px', cursor: 'pointer' }}>
+                            featured_play_list
+                        </i>
+                    </Link>
+                </li >,
                 <li>
                     {/* <button class="btn waves-effect waves-light #c62828 red darken-3"
                             onClick={() => {

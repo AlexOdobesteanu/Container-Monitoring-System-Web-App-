@@ -28,6 +28,7 @@
     "node-yaml": "^4.0.1",
     "path": "^0.12.7",
     "react-circular-progressbar": "^2.0.4",
+    "react-materialize": "^3.10.0",
     "styled-components": "^5.3.3"
   }
 }
