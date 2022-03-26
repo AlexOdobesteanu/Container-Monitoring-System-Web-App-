@@ -3,7 +3,9 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const yaml = require('js-yaml');
 const multer = require('multer')
+var async = require('async')
 var fs = require('fs')
+var Docker = require('dockerode')
 const Container = mongoose.model("Container")
 const cpuModel = mongoose.model("cpuModel")
 const Cluster = mongoose.model("Cluster")
@@ -81,6 +83,7 @@ router.post('/clusteradd', requireLogin, (req, res) => {
 })
 
 router.post('/clusters', requireLogin, (req, res) => {
+
     Cluster.find({ ownedBy: req.user._id })
         .populate("ownedBy", "domainName nickname")
         .then(mycluster => {
@@ -89,6 +92,20 @@ router.post('/clusters', requireLogin, (req, res) => {
         .catch(err => {
             console.log(err)
         })
+})
+
+router.post('/containersinfo', requireLogin, (req, res) => {
+    const { domainName, nickname } = req.body
+    var mydocker = new Docker({
+        host: domainName,
+        port: 2376,
+        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
+        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
+        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
+    })
+    mydocker.listContainers({ all: true }, function (err, containers) {
+        res.json({ containers })
+    })
 })
 
 

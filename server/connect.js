@@ -23,19 +23,19 @@ console.log("a")
 
 
 var container = mydocker.getContainer('4852cbe14deb')
-container.inspect(function (err, data) {
-    console.log(err)
-    console.log(data);
-});
+// container.stats({ stream: false }, function (err, data) {
+//     console.log(err)
+//     console.log(data);
+// });
 
 // container.stats({ stream: false }, function (err, stream) {
 //     console.log(stream)
 // })
 
-// mydocker.listContainers(function (err, containers) {
-//     console.log(err)
-//     console.log(containers)
-// })
+mydocker.listContainers(function (err, containers) {
+    console.log(err)
+    console.log(containers)
+})
 
 // console.log('a')
 

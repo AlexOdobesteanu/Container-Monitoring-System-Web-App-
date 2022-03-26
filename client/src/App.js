@@ -11,6 +11,7 @@ import ContainersInfo from './components/screens/ContainersInfo';
 import DockerSupport from './components/screens/DockerSupport';
 import AllClusters from './components/screens/AllClusters';
 import { reducer, initialState } from './reducers/userReducer'
+import ClusterInfo from './components/screens/ClusterInfo';
 
 export const UserContext = createContext()
 
@@ -58,6 +59,10 @@ const Routing = () => {
 
             <Route path="/allclusters" element={<AllClusters></AllClusters>}>
 
+
+            </Route>
+
+            <Route path="/clusterinfo" element={<ClusterInfo></ClusterInfo>}>
 
             </Route>
 
