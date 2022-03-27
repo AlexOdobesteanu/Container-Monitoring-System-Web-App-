@@ -108,6 +108,21 @@ router.post('/containersinfo', requireLogin, (req, res) => {
     })
 })
 
+router.post('/containersfullinfo', requireLogin, (req, res) => {
+    const { domainName, nickname, idContainer } = req.body
+    var mydocker = new Docker({
+        host: domainName,
+        port: 2376,
+        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
+        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
+        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
+    })
+    var container = mydocker.getContainer(idContainer)
+    container.inspect(function (err, data) {
+        res.json({ data })
+    })
+})
+
 
 router.get('/mycontainers', requireLogin, (req, res) => {
     Container.find({ ownedBy: req.user._id })

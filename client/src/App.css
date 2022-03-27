@@ -104,14 +104,31 @@ Link{
   width: 100px;
 }
 
+#white-text-large
+{
+  color:whitesmoke;
+  font-size: large;
+}
+
 #white-text
 {
   color:whitesmoke;
 }
 
+#flex
+{
+  display: flex!important;
+}
+
 #green-text
 {
   color:rgb(76, 175, 80);
+}
+
+#blue-text
+{
+  color:rgb(32, 151, 207);
+  font-size: large;
 }
 
 .collapsible-header

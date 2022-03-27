@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2'
 import { Chart as ChartJS } from 'chart.js/auto'
 import { Chart } from 'react-chartjs-2'
@@ -8,6 +9,7 @@ import { Parallax, Background } from 'react-parallax';
 import M from 'materialize-css'
 import "../../App.css"
 import { TextInput } from 'react-materialize';
+import { drawPoint } from 'chart.js/helpers';
 
 const ClusterInfo = () => {
     const style = { position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "whitesmoke" };
@@ -78,6 +80,19 @@ const ClusterInfo = () => {
                                             <p id='white-text'>ID: <b style={{ color: 'rgb(32,151,207)' }}> {item.Id}</b></p>
                                             <p id='white-text'>Image: <b style={{ color: 'rgb(32,151,207)' }}>{item.Image}</b></p>
                                         </div>
+
+                                        {
+                                            item.State === 'running' ? (<div class="card-action">
+                                                <Link to="/containerdata" style={{ color: 'rgb(32, 151, 207)' }}
+                                                    state={{
+                                                        idContainer: item.Id,
+                                                        domainName: domainName,
+                                                        nickname: nickname
+                                                    }}>View
+                                                    details</Link>
+                                            </div>) : (<div></div>)
+                                        }
+
                                     </div>
                                 </div>
 
