@@ -108,6 +108,27 @@ router.post('/containersinfo', requireLogin, (req, res) => {
     })
 })
 
+router.post('/automonitor', requireLogin, (req, res) => {
+    const { domainName, nickname, idContainer } = req.body
+    var mydocker = new Docker({
+        host: domainName,
+        port: 2376,
+        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
+        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
+        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
+    })
+
+    let arr = []
+    var container = mydocker.getContainer(idContainer)
+    setInterval(function () {
+        container.stats({ stream: false }, function (err, data) {
+            console.log(data)
+        });
+    }, 1000);
+
+})
+
+
 router.post('/containersfullinfo', requireLogin, (req, res) => {
     const { domainName, nickname, idContainer } = req.body
     var mydocker = new Docker({
@@ -121,6 +142,22 @@ router.post('/containersfullinfo', requireLogin, (req, res) => {
     container.inspect(function (err, data) {
         res.json({ data })
     })
+})
+
+
+router.post('/containersstats', requireLogin, (req, res) => {
+    const { domainName, nickname, idContainer } = req.body
+    var mydocker = new Docker({
+        host: domainName,
+        port: 2376,
+        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
+        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
+        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
+    })
+    var container = mydocker.getContainer(idContainer)
+    container.stats({ stream: false }, function (err, data) {
+        res.json({ data })
+    });
 })
 
 
@@ -159,7 +196,6 @@ router.post('/info', requireLogin, (req, res) => {
         .catch(err => {
             console.log(err)
         })
-
 })
 
 router.post("/cpu", (req, res) => {
