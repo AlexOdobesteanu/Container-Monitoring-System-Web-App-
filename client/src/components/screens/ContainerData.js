@@ -9,7 +9,6 @@ import { HashLoader } from 'react-spinners';
 import M from 'materialize-css'
 import "../../App.css"
 
-
 function useInterval(callback, delay) {
     const savedCallback = useRef();
 
@@ -261,7 +260,7 @@ const ContainerData = () => {
                 setNetworks(Object.keys(result.data.NetworkSettings.Networks))
                 setLoading(true)
                 setPorts(Object.keys(result.data.NetworkSettings.Ports))
-                console.log(result.data.NetworkSettings.Ports['6443/tcp'])
+
             })
 
 
@@ -328,7 +327,7 @@ const ContainerData = () => {
                                 </div>
 
                             </div>)
-                                : (<div></div>)
+                                : (<div style={style}><HashLoader color='white' speedMultiplier={2}></HashLoader></div>)
                         }
 
                     </div>)

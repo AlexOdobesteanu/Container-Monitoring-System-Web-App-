@@ -90,6 +90,54 @@ Link {
   width: 100px;
 }
 
+.circle {
+  cursor: pointer;
+  width: 200px;
+  height: 200px;
+  background-color: rgb(32, 151, 207, 0.2);
+  border: 3px solid rgb(32, 151, 207);
+  border-radius: 50%;
+}
+
+.circle-selected {
+  cursor: pointer;
+  width: 200px;
+  height: 200px;
+  background-color: rgb(32, 151, 207, 0.2);
+  border: 3px solid white;
+  border-radius: 50%;
+}
+
+.circle-red {
+  cursor: pointer;
+  width: 200px;
+  height: 200px;
+  background-color: rgba(255, 99, 132, 0.2);
+  border: 3px solid rgb(255, 99, 132);
+  border-radius: 50%;
+}
+
+.circle-red-selected {
+  cursor: pointer;
+  width: 200px;
+  height: 200px;
+  background-color: rgba(255, 99, 132, 0.2);
+  border: 3px solid white;
+  border-radius: 50%;
+}
+
+.text {
+  margin: auto;
+  color: rgb(32, 151, 207);
+  font-size: xx-large;
+}
+
+.text-red {
+  margin: auto;
+  color: rgb(255, 99, 132);
+  font-size: xx-large;
+}
+
 #white-text-large {
   color: whitesmoke;
   font-size: large;
