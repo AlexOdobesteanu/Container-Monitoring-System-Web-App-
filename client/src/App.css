@@ -94,16 +94,34 @@ Link {
   cursor: pointer;
   width: 200px;
   height: 200px;
-  background-color: rgb(32, 151, 207, 0.2);
-  border: 3px solid rgb(32, 151, 207);
+  background-color: rgb(76, 175, 80, 0.2);
+  border: 3px solid rgb(76, 175, 80);
   border-radius: 50%;
+}
+
+.circle-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 220px;
+  height: 220px;
+  background-color: rgba(255, 205, 86, 0.2);
+  border: 3px solid rgb(255, 205, 86);
+  border-radius: 50%;
+}
+
+.text-circle-centered {
+  color: rgb(255, 205, 86);
+  margin: auto;
+  font-size: xx-large;
 }
 
 .circle-selected {
   cursor: pointer;
   width: 200px;
   height: 200px;
-  background-color: rgb(32, 151, 207, 0.2);
+  background-color: rgb(76, 175, 80, 0.2);
   border: 3px solid white;
   border-radius: 50%;
 }
@@ -128,7 +146,7 @@ Link {
 
 .text {
   margin: auto;
-  color: rgb(32, 151, 207);
+  color: rgb(76, 175, 80);
   font-size: xx-large;
 }
 
@@ -160,10 +178,45 @@ Link {
   font-size: large;
 }
 
+#yellow-text {
+  color: rgb(255, 205, 86);
+  font-size: large;
+}
+
 #blue-text-big {
   color: rgb(32, 151, 207);
 }
 
+#Modal-10 {
+  background-color: rgb(40, 44, 52);
+  color: white;
+  border: 3px solid rgb(62, 68, 82) !important;
+  outline: none !important;
+}
+
+
+.modal-footer {
+  background-color: rgb(40, 44, 52) !important;
+  border-top: 3px solid rgb(62, 68, 82) !important;
+  outline: none !important;
+}
+
+.modal-bottom {
+  background-color: rgb(40, 44, 52) !important;
+  outline: none !important;
+}
+
+#modal-bottom {
+  background-color: rgb(40, 44, 52);
+  color: white;
+  outline: none !important;
+}
+
+#button-modal {
+  background-color: rgb(40, 44, 52);
+  color: white;
+  border: 3px solid rgb(62, 68, 82) !important
+}
 
 
 #blue-textLarge {
@@ -172,8 +225,22 @@ Link {
   text-decoration: underline;
 }
 
+#yellow-textLarge {
+  color: rgb(255, 205, 86);
+  font-size: 40px;
+  text-decoration: underline;
+}
+
 #blue-button {
   background-color: rgb(32, 151, 207) !important;
+}
+
+#red-button {
+  border: 3px solid rgb(255, 99, 132) !important;
+  color: rgb(255, 99, 132);
+  background-color: rgba(255, 99, 132, 0.2);
+  font-size: large;
+  font-weight: bold;
 }
 
 .collapsible-header {

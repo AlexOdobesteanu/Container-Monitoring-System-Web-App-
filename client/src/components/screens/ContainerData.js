@@ -7,7 +7,10 @@ import { } from "materialize-css"
 import { Parallax, Background } from 'react-parallax';
 import { HashLoader } from 'react-spinners';
 import M from 'materialize-css'
+
+
 import "../../App.css"
+
 
 function useInterval(callback, delay) {
     const savedCallback = useRef();
@@ -83,6 +86,7 @@ const ContainerData = () => {
                     {
                         networks.map(item => {
                             return (
+
                                 <div>
                                     <p id='white-text-large'>Network Name: <b id='blue-text'>{item}</b></p>
                                     <p id='white-text-large'>MAC Address: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].MacAddress}</b></p>
@@ -96,6 +100,7 @@ const ContainerData = () => {
                                     <p id='white-text-large'>IPv6 Gateway: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].IPv6Gateway}</b></p>
                                     <br></br>
                                 </div>
+
                             )
                         })
 
@@ -333,7 +338,7 @@ const ContainerData = () => {
                     </div>)
                     : (<div style={{
                         background: "rgb(40,44,52)",
-                        minHeight: '530vh',
+                        minHeight: '540vh',
                         overflow: 'auto'
                     }}>
                         {
@@ -419,7 +424,7 @@ const ContainerData = () => {
 
 
                                     <div style={{
-                                        margin: "700px auto",
+                                        margin: "750px auto",
                                         height: 800,
                                         width: 800,
                                         position: 'absolute', left: '25%', top: '80%',
@@ -574,7 +579,7 @@ const ContainerData = () => {
 
                                                     </div>
 
-                                                    <div style={{ display: 'flex', gap: '170px', marginTop: '420px' }}>
+                                                    <div style={{ display: 'flex', gap: '170px', marginTop: '550px' }}>
                                                         <Line data={{
                                                             labels: dates.slice(-10),
                                                             datasets: [{
@@ -666,7 +671,7 @@ const ContainerData = () => {
 
                                                     </div>
 
-                                                    <div style={{ display: 'flex', gap: '170px', marginTop: '750px' }}>
+                                                    <div style={{ display: 'flex', gap: '170px', marginTop: '680px' }}>
                                                         <Line data={{
                                                             labels: dates.slice(-10),
                                                             datasets: [{
@@ -897,54 +902,63 @@ const ContainerData = () => {
                             <br></br>
                             <br></br>
 
-                            <div><p id='blue-textLarge' className='centered'>MEMORY STATS</p></div>
-                            <div style={{ textAlign: 'center', width: "800px", margin: '50px auto' }}>
-                                <div class="card horizontal">
-                                    <div id='flex' style={{ width: '100%' }}>
-                                        <div class="card-content" id='to-center'>
-                                            <p id='white-text-large'>MEM Usage %: <b id='blue-text'>{memoryPerc[memoryPerc.length - 1]} %</b></p>
-                                            <p id='white-text-large'>MEM Used: <b id='blue-text'>{memoryUsage[memoryUsage.length - 1]} MiB</b></p>
-                                            <p id='white-text-large'>Memory Limit: <b id='blue-text'>{fullData} GiB</b></p>
-                                            <p id='white-text-large'>Cache: <b id='blue-text'>{cache[cache.length - 1]} MiB</b></p>
-                                        </div>
-                                    </div>
+
+
+                            <div><p id='yellow-textLarge' className='centered'>MEMORY STATS</p></div>
+                            <div style={{ display: 'flex' }}>
+                                <div class="circle-centered" style={{ margin: '50px auto' }}>
+                                    <div style={{ textAlign: 'center' }}><b class="text-circle-centered">{memoryPerc[memoryPerc.length - 1]} % MEM used</b></div>
+                                </div>
+                                <div class="circle-centered" style={{ margin: '50px auto' }}>
+                                    <div style={{ textAlign: 'center' }}><b class="text-circle-centered">{memoryUsage[memoryUsage.length - 1]} MiB MEM used</b></div>
+                                </div>
+                                <div class="circle-centered" style={{ margin: '50px auto' }}>
+                                    <div style={{ textAlign: 'center' }}><b class="text-circle-centered">{fullData} GiB MEM Limit</b></div>
+                                </div>
+                                <div class="circle-centered" style={{ margin: '50px auto' }}>
+                                    <div style={{ textAlign: 'center' }}><b class="text-circle-centered">{cache[cache.length - 1]} MiB cache</b></div>
                                 </div>
                             </div>
-                            <div style={{ marginTop: "1400px" }}><p id='blue-textLarge' className='centered'>CPU STATS</p></div>
-                            <div style={{ textAlign: 'center', width: "800px", margin: '50px auto' }}>
-                                <div class="card horizontal">
-                                    <div id='flex' style={{ width: '100%' }}>
-                                        <div class="card-content" id='to-center'>
-                                            <p id='white-text-large'>Online CPUs: <b id='blue-text'>{onlineCPU}</b></p>
-                                            <p id='white-text-large'>CPU Percentage %: <b id='blue-text'>{cpuPercent[cpuPercent.length - 1]} %</b></p>
-                                            <p id='white-text-large'>User Mode Percentage %: <b id='blue-text'>{userMode[userMode.length - 1]} %</b></p>
-                                            <p id='white-text-large'>Kernel Mode Percentage %: <b id='blue-text'>{kernelMode[kernelMode.length - 1]} %</b></p>
-                                        </div>
-                                    </div>
+
+
+                            <div style={{ marginTop: "1300px" }}><p id='yellow-textLarge' className='centered'>CPU STATS</p></div>
+                            <div style={{ display: 'flex' }}>
+                                <div class="circle-centered" style={{ margin: '50px auto' }}>
+                                    <div style={{ textAlign: 'center' }}><b class="text-circle-centered">{onlineCPU} online CPUs</b></div>
+                                </div>
+                                <div class="circle-centered" style={{ margin: '50px auto' }}>
+                                    <div style={{ textAlign: 'center' }}><b class="text-circle-centered">{cpuPercent[cpuPercent.length - 1]} % <br></br> CPU Usage</b></div>
+                                </div>
+                                <div class="circle-centered" style={{ margin: '50px auto' }}>
+                                    <div style={{ textAlign: 'center' }}><b class="text-circle-centered">{userMode[userMode.length - 1]} % User Mode </b></div>
+                                </div>
+                                <div class="circle-centered" style={{ margin: '50px auto' }}>
+                                    <div style={{ textAlign: 'center' }}><b class="text-circle-centered">{kernelMode[kernelMode.length - 1]} % Kernel Mode</b></div>
                                 </div>
                             </div>
-                            <div style={{ marginTop: "800px" }}><p id='blue-textLarge' className='centered'>NETWORK STATS</p></div>
+
+                            <div style={{ marginTop: "700px" }}><p id='yellow-textLarge' className='centered'>NETWORK STATS</p></div>
                             <div style={{ textAlign: 'center', width: "800px", margin: '50px auto' }}>
                                 <div class="card horizontal">
                                     <div id='flex' style={{ width: '100%' }}>
                                         <div class="card-content" id='to-center'>
-                                            <p id='white-text-large'>Network : <b id='blue-text'>{networks[0]}</b></p>
+                                            <p id='white-text-large'>Network : <b id='yellow-text'>{networks[0]}</b></p>
 
                                             <br></br>
 
-                                            <p id='white-text-large'>Received data (Rx) : <b id='blue-text'>{rxBytes[rxBytes.length - 1]} MiB</b></p>
-                                            <p id='white-text-large'>Rx packets: <b id='blue-text'>{rxPackets[rxPackets.length - 1]} </b></p>
-                                            <p id='white-text-large'>Rx dropped: <b id='blue-text'>{rxDropped[rxDropped.length - 1]} </b></p>
-                                            <p id='white-text-large'>Rx errors: <b id='blue-text'>{rxErrors[rxErrors.length - 1]} </b></p>
+                                            <p id='white-text-large'>Received data (Rx) : <b id='yellow-text'>{rxBytes[rxBytes.length - 1]} MiB</b></p>
+                                            <p id='white-text-large'>Rx packets: <b id='yellow-text'>{rxPackets[rxPackets.length - 1]} </b></p>
+                                            <p id='white-text-large'>Rx dropped: <b id='yellow-text'>{rxDropped[rxDropped.length - 1]} </b></p>
+                                            <p id='white-text-large'>Rx errors: <b id='yellow-text'>{rxErrors[rxErrors.length - 1]} </b></p>
 
                                             <br></br>
 
-                                            <p id='white-text-large'>Transmitted data (Tx) : <b id='blue-text'>{txBytes[txBytes.length - 1]} MiB</b></p>
-                                            <p id='white-text-large'>Tx packets: <b id='blue-text'>{txPackets[txPackets.length - 1]} </b></p>
-                                            <p id='white-text-large'>Tx dropped: <b id='blue-text'>{txDropped[txDropped.length - 1]} </b></p>
-                                            <p id='white-text-large'>Tx errors: <b id='blue-text'>{txErrors[txErrors.length - 1]} </b></p>
+                                            <p id='white-text-large'>Transmitted data (Tx) : <b id='yellow-text'>{txBytes[txBytes.length - 1]} MiB</b></p>
+                                            <p id='white-text-large'>Tx packets: <b id='yellow-text'>{txPackets[txPackets.length - 1]} </b></p>
+                                            <p id='white-text-large'>Tx dropped: <b id='yellow-text'>{txDropped[txDropped.length - 1]} </b></p>
+                                            <p id='white-text-large'>Tx errors: <b id='yellow-text'>{txErrors[txErrors.length - 1]} </b></p>
                                             <br></br>
-                                            <p id='white-text-large'>Tx/Rx rate : <b id='blue-text'>{rate[rate.length - 1]} </b></p>
+                                            <p id='white-text-large'>Tx/Rx rate : <b id='yellow-text'>{rate[rate.length - 1]} </b></p>
                                         </div>
                                     </div>
                                 </div>

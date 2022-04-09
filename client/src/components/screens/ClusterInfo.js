@@ -8,7 +8,7 @@ import { } from "materialize-css"
 import { Parallax, Background } from 'react-parallax';
 import M from 'materialize-css'
 import "../../App.css"
-import { TextInput } from 'react-materialize';
+import { Collapsible, CollapsibleItem, Icon, TextInput, Button, Modal, Checkbox } from 'react-materialize'
 import { drawPoint } from 'chart.js/helpers';
 import { CircleLoader, DotLoader, HashLoader, MoonLoader, RingLoader } from 'react-spinners';
 import { ReactSpinner } from 'react-spinning-wheel';
@@ -40,6 +40,11 @@ const ClusterInfo = () => {
     const [loading, setLoading] = useState(false)
     const [isRunning, setIsRunning] = useState(true);
 
+    const [checkedMemory, setCheckedMemory] = useState(false);
+    const [checkedCPU, setCheckedCPU] = useState(false);
+    const [checkedNetwork, setCheckedNetwork] = useState(false);
+
+
     const [selectedRunning, setSelectedRunning] = useState(false);
     const [selectedExit, setSelectedExit] = useState(false);
 
@@ -50,7 +55,8 @@ const ClusterInfo = () => {
     const [data, setData] = useState([])
     const location = useLocation();
 
-    const idCluster = location.state.idCluster
+
+
     const domainName = location.state.domainName
     const nickname = location.state.nickname
 
@@ -64,6 +70,25 @@ const ClusterInfo = () => {
         setSelectedRunning(false)
         setSelectedExit(!selectedExit)
     }
+    const execTrigger = () => {
+        setCheckedMemory(false)
+        setCheckedCPU(false)
+        setCheckedNetwork(false)
+    }
+
+
+
+    const clickMemory = () => {
+        setCheckedMemory(!checkedMemory)
+    }
+
+    const clickCPU = () => {
+        setCheckedCPU(!checkedCPU)
+    }
+
+    const clickNetwork = () => {
+        setCheckedNetwork(!checkedNetwork)
+    }
 
     const renderRunning = () => {
 
@@ -75,31 +100,70 @@ const ClusterInfo = () => {
                         data.map(item => {
                             if (item.State == 'running') {
                                 return (
-                                    <div class="card horizontal">
-                                        <div class="card-image">
-                                        </div>
-                                        <div class="card-stacked">
-                                            <div class="card-content">
-                                                <p id='white-text'>
-                                                    Type:<b style={{ color: 'rgb(32,151,207)' }}> Container</b>
+                                    <>
+                                        <div class="card horizontal">
+                                            <div class="card-image">
+                                            </div>
+                                            <div class="card-stacked">
+                                                <div class="card-content">
+                                                    <p id='white-text'>
+                                                        Type:<b style={{ color: 'rgb(32,151,207)' }}> Container</b>
+                                                    </p>
+                                                    <p id='white-text'>Name: <b style={{ color: 'rgb(32,151,207)' }}> {item.Names}</b></p>
+                                                    <p id='white-text'>State: <b id='green-text'> {item.State}</b></p>
+                                                    <p id='white-text'>Status: <b id='green-text'> {item.Status}</b></p>
+                                                    <p id='white-text'>ID: <b style={{ color: 'rgb(32,151,207)' }}> {item.Id}</b></p>
+                                                    <p id='white-text'>Image: <b style={{ color: 'rgb(32,151,207)' }}>{item.Image}</b></p>
+                                                </div>
+
+
+                                                <div class="card-action">
+                                                    <Link to="/containerdata" style={{ color: 'rgb(32, 151, 207)' }}
+                                                        state={{
+                                                            idContainer: item.Id,
+                                                            domainName: domainName,
+                                                            nickname: nickname
+                                                        }}>View
+                                                        details</Link>
+                                                </div>
+
+                                            </div>
+
+                                            <Modal
+                                                actions={[
+                                                    <Button flat modal="close" node="button" waves="green">Close</Button>
+                                                ]}
+                                                bottomSheet={false}
+                                                fixedFooter={false}
+                                                header="Alert configuration"
+                                                id="Modal-10"
+                                                open={false}
+                                                options={{
+                                                    dismissible: true,
+                                                    endingTop: '10%',
+                                                    inDuration: 250,
+                                                    onCloseEnd: null,
+                                                    onCloseStart: null,
+                                                    onOpenEnd: null,
+                                                    onOpenStart: null,
+                                                    opacity: 0.5,
+                                                    outDuration: 250,
+                                                    preventScrolling: true,
+                                                    startingTop: '4%'
+                                                }}
+                                                trigger={<h5>
+                                                    <i className="medium material-icons white-text " style={{ fontSize: '30px', cursor: 'pointer' }}>add_alert</i>
+                                                </h5>}
+                                            >
+                                                <p>
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
                                                 </p>
-                                                <p id='white-text'>Name: <b style={{ color: 'rgb(32,151,207)' }}> {item.Names}</b></p>
-                                                <p id='white-text'>State: <b id='green-text'> {item.State}</b></p>
-                                                <p id='white-text'>Status: <b id='green-text'> {item.Status}</b></p>
-                                                <p id='white-text'>ID: <b style={{ color: 'rgb(32,151,207)' }}> {item.Id}</b></p>
-                                                <p id='white-text'>Image: <b style={{ color: 'rgb(32,151,207)' }}>{item.Image}</b></p>
-                                            </div>
-                                            <div class="card-action">
-                                                <Link to="/containerdata" style={{ color: 'rgb(32, 151, 207)' }}
-                                                    state={{
-                                                        idContainer: item.Id,
-                                                        domainName: domainName,
-                                                        nickname: nickname
-                                                    }}>View
-                                                    details</Link>
-                                            </div>
+                                            </Modal>
+
+
                                         </div>
-                                    </div>
+
+                                    </>
                                 )
                             }
                             else {
@@ -147,7 +211,11 @@ const ClusterInfo = () => {
                                                     }}>View
                                                     details</Link>
                                             </div>
+
                                         </div>
+                                        {/* <h5>
+                                            <i className="medium material-icons white-text " style={{ fontSize: '30px', cursor: 'pointer' }}>add_alert</i>
+                                        </h5> */}
                                     </div>
                                 )
                             }
@@ -198,6 +266,178 @@ const ClusterInfo = () => {
                                                     details</Link>
                                             </div>
                                         </div>
+                                        <Modal
+                                            actions={[
+                                                <div id='modal-bottom'>
+                                                    <Button flat modal="close" node="button" waves="green" id='red-button'>Close</Button>
+                                                </div>
+                                            ]}
+                                            bottomSheet={false}
+                                            fixedFooter={false}
+                                            header="Alert configuration"
+                                            id="Modal-10"
+                                            open={false}
+                                            options={{
+                                                dismissible: true,
+                                                endingTop: '10%',
+                                                inDuration: 250,
+                                                onCloseEnd: null,
+                                                onCloseStart: null,
+                                                onOpenEnd: null,
+                                                onOpenStart: null,
+                                                opacity: 0.5,
+                                                outDuration: 250,
+                                                preventScrolling: false,
+                                                startingTop: '4%'
+                                            }}
+                                            trigger={<h5>
+                                                <i className="medium material-icons white-text " style={{ fontSize: '30px', cursor: 'pointer', position: "absolute", top: '0', right: 0 }} onClick={() => execTrigger()}>add_alert</i>
+                                            </h5>}
+                                        >
+                                            <>
+                                                <div style={{ position: "absolute", top: '0', right: 0, cursor: 'default' }}>
+                                                    <i class="material-icons" style={{ fontSize: '35px' }} >notifications</i>
+                                                </div>
+                                                <br></br>
+                                                <div style={{ display: 'flex', gap: '100px' }}>
+                                                    <Checkbox
+                                                        checked={checkedMemory}
+                                                        label="Memory"
+                                                        onChange={clickMemory}
+                                                    />
+                                                    <Checkbox
+
+                                                        checked={checkedCPU}
+                                                        label="CPU"
+                                                        onChange={clickCPU}
+                                                    />
+                                                    <Checkbox
+
+                                                        checked={checkedNetwork}
+                                                        label="Network"
+                                                        onChange={clickNetwork}
+                                                    />
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '150px' }}>
+                                                    {
+                                                        checkedMemory ?
+                                                            (<div>
+                                                                <div className="input-field" style={{
+                                                                    margin: "10px auto",
+                                                                    maxWidth: "550px",
+                                                                    padding: "20px",
+                                                                    textAlign: "center",
+                                                                }}>
+                                                                    <p><b id='white-text-large'>Memory</b></p>
+                                                                    <div class="input-field">
+                                                                        <input id="last_name" type="text" />
+                                                                        <label for="mem_perc">Memory Percentage Alert</label>
+                                                                    </div>
+                                                                    <br></br>
+                                                                    <div class="input-field">
+                                                                        <input id="last_name" type="text" />
+                                                                        <label for="mem_used">Memory Used Alert</label>
+                                                                    </div>
+                                                                    <br></br>
+                                                                    <div class="input-field">
+                                                                        <input id="last_name" type="text" />
+                                                                        <label for="cache_used">Cache Alert</label>
+                                                                    </div>
+
+
+
+
+
+
+
+                                                                </div>
+                                                            </div>)
+
+                                                            : (<div></div>)
+                                                    }
+                                                    {
+                                                        checkedCPU ? (<div>
+                                                            <div className="input-field" style={{
+                                                                margin: "10px auto",
+                                                                maxWidth: "550px",
+                                                                padding: "20px",
+                                                                textAlign: "center",
+                                                            }}>
+                                                                <p><b id='white-text-large'>CPU</b></p>
+                                                                <div class="input-field">
+                                                                    <input id="last_name" type="text" />
+                                                                    <label for="cpu_perc">CPU Percentage Alert</label>
+                                                                </div>
+                                                                <br></br>
+                                                                <div class="input-field">
+                                                                    <input id="last_name" type="text" />
+                                                                    <label for="user_perc">User mode Percentage</label>
+                                                                </div>
+                                                                <br></br>
+                                                                <div class="input-field">
+                                                                    <input id="last_name" type="text" />
+                                                                    <label for="kernel_perc">Kernel mode Percentage</label>
+                                                                </div>
+
+
+
+
+
+
+
+                                                            </div>
+                                                        </div>) : (<div></div>)
+                                                    }
+                                                    {
+                                                        checkedNetwork ? (<div>
+                                                            <div className="input-field" style={{
+                                                                margin: "10px auto",
+                                                                maxWidth: "550px",
+                                                                padding: "20px",
+                                                                textAlign: "center",
+                                                            }}>
+                                                                <p><b id='white-text-large'>Network</b></p>
+                                                                <div class="input-field">
+                                                                    <input id="last_name" type="text" />
+                                                                    <label for="mem_perc">Memory Percentage Alert</label>
+                                                                </div>
+                                                                <br></br>
+                                                                <div class="input-field">
+                                                                    <input id="last_name" type="text" />
+                                                                    <label for="mem_used">Memory Used Alert</label>
+                                                                </div>
+                                                                <br></br>
+                                                                <div class="input-field">
+                                                                    <input id="last_name" type="text" />
+                                                                    <label for="cache_used">Cache Alert</label>
+                                                                </div>
+
+
+
+
+
+
+
+                                                            </div>
+                                                        </div>) : (<div></div>)
+                                                    }
+
+
+
+                                                </div>
+                                                {
+                                                    checkedMemory || checkedCPU || checkedNetwork ? (<div style={{
+                                                        margin: "10px auto",
+                                                        maxWidth: "530px",
+                                                        textAlign: "center"
+                                                    }}>
+                                                        <button class="btn waves-effect waves-light green" type="submit" name="action" id='blue-button-bordered'>Set Alerts
+                                                        </button>
+                                                    </div>) : (<div></div>)
+                                                }
+                                            </>
+
+                                        </Modal>
                                     </div>
                                 )
                             }
@@ -227,6 +467,9 @@ const ClusterInfo = () => {
                                                     details</Link>
                                             </div>
                                         </div>
+                                        {/* <h5>
+                                            <i className="medium material-icons white-text " style={{ fontSize: '30px', cursor: 'pointer' }}>add_alert</i>
+                                        </h5> */}
                                     </div>
                                 )
                             }
@@ -313,7 +556,7 @@ const ClusterInfo = () => {
             {
                 loading ? (<div style={{
                     background: "rgb(40,44,52)",
-                    minHeight: '150vh',
+                    minHeight: '100vh',
                     overflow: 'auto'
                 }}>
                     <div class="col s12 m7" style={{
