@@ -9,6 +9,7 @@ var Docker = require('dockerode')
 const Container = mongoose.model("Container")
 const cpuModel = mongoose.model("cpuModel")
 const Cluster = mongoose.model("Cluster")
+const Alert = mongoose.model("Alert")
 const requireLogin = require('../middleware/requireLogin')
 const { SECRET } = require('../keys')
 const { IV } = require('../keys')
@@ -354,6 +355,39 @@ router.post("/multiple", requireLogin, (req, res) => {
         })
         return res.status(201).json({ succes: "Uploaded successfully" })
     }
+})
+
+
+router.post("/AlertConfigure", requireLogin, (req, res) => {
+    console.log('aaa')
+    const { idCluster, idContainer, MemPercAlert, MemUsedAlert, CacheAlert, CpuPercAlert
+        , UserModeAlert, KernelModeAlert, TxRxRateAlert, TxDataAlert, RxDataAlert
+        , StatusChangeAlert, PacketDroppedAlert, PacketErrorAlert } = req.body
+
+    const alert = new Alert({
+        ownedBy: req.user,
+        idCluster: idCluster,
+        idContainer: idContainer,
+        MemPercAlert: MemPercAlert,
+        MemUsedAlert: MemUsedAlert,
+        CacheAlert: CacheAlert,
+        CpuPercAlert: CpuPercAlert,
+        UserModeAlert: UserModeAlert,
+        KernelModeAlert: KernelModeAlert,
+        TxRxRateAlert: TxRxRateAlert,
+        TxDataAlert: TxDataAlert,
+        RxDataAlert: RxDataAlert,
+        StatusChangeAlert: StatusChangeAlert,
+        PacketDroppedAlert: PacketDroppedAlert,
+        PacketErrorAlert: PacketErrorAlert
+    })
+    alert.save().then(result => {
+        res.json({ alert: result })
+    })
+        .catch(err => {
+            return res.status(422).json({ error: "Error Adding Alert" })
+            console.log(err)
+        })
 })
 
 

@@ -243,6 +243,11 @@ Link {
   font-weight: bold;
 }
 
+.modal {
+  max-height: 100%;
+  overflow: visible
+}
+
 .collapsible-header {
   background-color: rgb(40, 44, 52) !important;
   border: 3px solid rgb(62, 68, 82) !important;

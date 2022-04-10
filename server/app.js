@@ -26,6 +26,7 @@ require('./models/user')
 require('./models/container')
 require('./models/cpu')
 require('./models/cluster')
+require('./models/alert')
 
 
 app.use(express.json())

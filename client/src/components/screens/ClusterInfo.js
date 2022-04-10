@@ -43,6 +43,23 @@ const ClusterInfo = () => {
     const [checkedMemory, setCheckedMemory] = useState(false);
     const [checkedCPU, setCheckedCPU] = useState(false);
     const [checkedNetwork, setCheckedNetwork] = useState(false);
+    const [checkedStatus, setCheckedStatus] = useState(false);
+    const [checkedDropped, setCheckedDropped] = useState(false);
+    const [checkedError, setCheckedError] = useState(false)
+
+    const [MemoryPerc, setMemoryPerc] = useState("")
+    const [MemoryUsed, setMemoryUsed] = useState("")
+    const [CacheUsed, setCacheUsed] = useState("")
+
+    const [NetworkRate, setNetworkRate] = useState("")
+    const [TxData, setTxData] = useState("")
+    const [RxData, setRxData] = useState("")
+
+    const [CpuPerc, setCpuPerc] = useState("")
+    const [UserPerc, setUserPerc] = useState("")
+    const [KernelPerc, setKernelPerc] = useState("")
+
+
 
 
     const [selectedRunning, setSelectedRunning] = useState(false);
@@ -56,7 +73,7 @@ const ClusterInfo = () => {
     const location = useLocation();
 
 
-
+    const idCluster = location.state.idCluster
     const domainName = location.state.domainName
     const nickname = location.state.nickname
 
@@ -74,12 +91,26 @@ const ClusterInfo = () => {
         setCheckedMemory(false)
         setCheckedCPU(false)
         setCheckedNetwork(false)
+        setCheckedStatus(false)
+        setCheckedDropped(false)
+        setCheckedError(false)
     }
 
 
+    const clickDropped = () => {
+        setCheckedDropped(!checkedDropped)
+    }
+
+    const clickError = () => {
+        setCheckedError(!checkedError)
+    }
 
     const clickMemory = () => {
         setCheckedMemory(!checkedMemory)
+    }
+
+    const clickStatus = () => {
+        setCheckedStatus(!checkedStatus)
     }
 
     const clickCPU = () => {
@@ -88,6 +119,44 @@ const ClusterInfo = () => {
 
     const clickNetwork = () => {
         setCheckedNetwork(!checkedNetwork)
+    }
+
+    const handleSetAlert = (id) => {
+        fetch('/AlertConfigure',
+            {
+                method: "post",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    {
+                        idCluster: idCluster,
+                        idContainer: id,
+                        MemPercAlert: MemoryPerc,
+                        MemUsedAlert: MemoryUsed,
+                        CacheAlert: CacheUsed,
+                        CpuPercAlert: CpuPerc,
+                        UserModeAlert: UserPerc,
+                        KernelModeAlert: KernelPerc,
+                        TxRxRateAlert: NetworkRate,
+                        TxDataAlert: TxData,
+                        RxDataAlert: RxData,
+                        StatusChangeAlert: checkedStatus,
+                        PacketDroppedAlert: checkedDropped,
+                        PacketErrorAlert: checkedError
+                    }
+                )
+            }
+        ).then(res => res.json())
+            .then(result => {
+                if (result.error) {
+                    M.toast({ html: data.error, classes: 'rounded red darken-3' })
+                }
+                else {
+                    M.toast({ html: "Alert added successfully", classes: 'rounded green' })
+                }
+            })
     }
 
     const renderRunning = () => {
@@ -152,12 +221,151 @@ const ClusterInfo = () => {
                                                     startingTop: '4%'
                                                 }}
                                                 trigger={<h5>
-                                                    <i className="medium material-icons white-text " style={{ fontSize: '30px', cursor: 'pointer' }}>add_alert</i>
+                                                    <i className="medium material-icons white-text " style={{ fontSize: '30px', cursor: 'pointer', position: "absolute", top: '0', right: 0 }} onClick={() => execTrigger()}>add_alert</i>
                                                 </h5>}
                                             >
-                                                <p>
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-                                                </p>
+                                                <>
+                                                    <div style={{ position: "absolute", top: '0', right: 0, cursor: 'default' }}>
+                                                        <i class="material-icons" style={{ fontSize: '35px' }} >notifications</i>
+                                                    </div>
+                                                    <br></br>
+                                                    <div style={{ display: 'flex', gap: '100px' }}>
+                                                        <Checkbox
+                                                            checked={checkedMemory}
+                                                            label="Memory"
+                                                            onChange={clickMemory}
+                                                        />
+                                                        <Checkbox
+
+                                                            checked={checkedCPU}
+                                                            label="CPU"
+                                                            onChange={clickCPU}
+                                                        />
+                                                        <Checkbox
+
+                                                            checked={checkedNetwork}
+                                                            label="Network"
+                                                            onChange={clickNetwork}
+                                                        />
+                                                    </div>
+                                                    <div style={{ display: 'flex', gap: '150px' }}>
+                                                        {
+                                                            checkedMemory ?
+                                                                (<div>
+                                                                    <div className="input-field" style={{
+                                                                        margin: "10px auto",
+                                                                        maxWidth: "550px",
+                                                                        padding: "20px",
+                                                                        textAlign: "center",
+                                                                    }}>
+                                                                        <p><b id='white-text-large'>Memory</b></p>
+                                                                        <div class="input-field">
+                                                                            <input id="last_name" type="text" />
+                                                                            <label for="mem_perc">Memory Percentage Alert</label>
+                                                                        </div>
+                                                                        <br></br>
+                                                                        <div class="input-field">
+                                                                            <input id="last_name" type="text" />
+                                                                            <label for="mem_used">Memory Used Alert</label>
+                                                                        </div>
+                                                                        <br></br>
+                                                                        <div class="input-field">
+                                                                            <input id="last_name" type="text" />
+                                                                            <label for="cache_used">Cache Alert</label>
+                                                                        </div>
+
+
+
+
+
+
+
+                                                                    </div>
+                                                                </div>)
+
+                                                                : (<div></div>)
+                                                        }
+                                                        {
+                                                            checkedCPU ? (<div>
+                                                                <div className="input-field" style={{
+                                                                    margin: "10px auto",
+                                                                    maxWidth: "550px",
+                                                                    padding: "20px",
+                                                                    textAlign: "center",
+                                                                }}>
+                                                                    <p><b id='white-text-large'>CPU</b></p>
+                                                                    <div class="input-field">
+                                                                        <input id="last_name" type="text" />
+                                                                        <label for="cpu_perc">CPU Percentage Alert</label>
+                                                                    </div>
+                                                                    <br></br>
+                                                                    <div class="input-field">
+                                                                        <input id="last_name" type="text" />
+                                                                        <label for="user_perc">User mode Percentage</label>
+                                                                    </div>
+                                                                    <br></br>
+                                                                    <div class="input-field">
+                                                                        <input id="last_name" type="text" />
+                                                                        <label for="kernel_perc">Kernel mode Percentage</label>
+                                                                    </div>
+
+
+
+
+
+
+
+                                                                </div>
+                                                            </div>) : (<div></div>)
+                                                        }
+                                                        {
+                                                            checkedNetwork ? (<div>
+                                                                <div className="input-field" style={{
+                                                                    margin: "10px auto",
+                                                                    maxWidth: "550px",
+                                                                    padding: "20px",
+                                                                    textAlign: "center",
+                                                                }}>
+                                                                    <p><b id='white-text-large'>Network</b></p>
+                                                                    <div class="input-field">
+                                                                        <input id="last_name" type="text" />
+                                                                        <label for="mem_perc">Memory Percentage Alert</label>
+                                                                    </div>
+                                                                    <br></br>
+                                                                    <div class="input-field">
+                                                                        <input id="last_name" type="text" />
+                                                                        <label for="mem_used">Memory Used Alert</label>
+                                                                    </div>
+                                                                    <br></br>
+                                                                    <div class="input-field">
+                                                                        <input id="last_name" type="text" />
+                                                                        <label for="cache_used">Cache Alert</label>
+                                                                    </div>
+
+
+
+
+
+
+
+                                                                </div>
+                                                            </div>) : (<div></div>)
+                                                        }
+
+
+
+                                                    </div>
+                                                    {
+                                                        checkedMemory || checkedCPU || checkedNetwork ? (<div style={{
+                                                            margin: "10px auto",
+                                                            maxWidth: "530px",
+                                                            textAlign: "center"
+                                                        }}>
+                                                            <button class="btn waves-effect waves-light green" onClick={() => handleSetAlert(item.Id)}>Set Alerts
+                                                            </button>
+                                                        </div>) : (<div></div>)
+                                                    }
+                                                </>
                                             </Modal>
 
 
@@ -298,6 +506,9 @@ const ClusterInfo = () => {
                                                 <div style={{ position: "absolute", top: '0', right: 0, cursor: 'default' }}>
                                                     <i class="material-icons" style={{ fontSize: '35px' }} >notifications</i>
                                                 </div>
+                                                <div>
+                                                    <b id='blue-text'>{item.Names}</b>
+                                                </div>
                                                 <br></br>
                                                 <div style={{ display: 'flex', gap: '100px' }}>
                                                     <Checkbox
@@ -330,25 +541,19 @@ const ClusterInfo = () => {
                                                                 }}>
                                                                     <p><b id='white-text-large'>Memory</b></p>
                                                                     <div class="input-field">
-                                                                        <input id="last_name" type="text" />
+                                                                        <input id="last_name" type="text" value={MemoryPerc} onChange={(e) => setMemoryPerc(e.target.value)} />
                                                                         <label for="mem_perc">Memory Percentage Alert</label>
                                                                     </div>
                                                                     <br></br>
                                                                     <div class="input-field">
-                                                                        <input id="last_name" type="text" />
+                                                                        <input id="last_name" type="text" value={MemoryUsed} onChange={(e) => setMemoryUsed(e.target.value)} />
                                                                         <label for="mem_used">Memory Used Alert</label>
                                                                     </div>
                                                                     <br></br>
                                                                     <div class="input-field">
-                                                                        <input id="last_name" type="text" />
+                                                                        <input id="last_name" type="text" value={CacheUsed} onChange={(e) => setCacheUsed(e.target.value)} />
                                                                         <label for="cache_used">Cache Alert</label>
                                                                     </div>
-
-
-
-
-
-
 
                                                                 </div>
                                                             </div>)
@@ -365,19 +570,20 @@ const ClusterInfo = () => {
                                                             }}>
                                                                 <p><b id='white-text-large'>CPU</b></p>
                                                                 <div class="input-field">
-                                                                    <input id="last_name" type="text" />
+                                                                    <input id="last_name" type="text" value={CpuPerc} onChange={(e) => setCpuPerc(e.target.value)} />
                                                                     <label for="cpu_perc">CPU Percentage Alert</label>
                                                                 </div>
                                                                 <br></br>
                                                                 <div class="input-field">
-                                                                    <input id="last_name" type="text" />
+                                                                    <input id="last_name" type="text" value={UserPerc} onChange={(e) => setUserPerc(e.target.value)} />
                                                                     <label for="user_perc">User mode Percentage</label>
                                                                 </div>
                                                                 <br></br>
                                                                 <div class="input-field">
-                                                                    <input id="last_name" type="text" />
+                                                                    <input id="last_name" type="text" value={KernelPerc} onChange={(e) => setKernelPerc(e.target.value)} />
                                                                     <label for="kernel_perc">Kernel mode Percentage</label>
                                                                 </div>
+
 
 
 
@@ -398,25 +604,19 @@ const ClusterInfo = () => {
                                                             }}>
                                                                 <p><b id='white-text-large'>Network</b></p>
                                                                 <div class="input-field">
-                                                                    <input id="last_name" type="text" />
-                                                                    <label for="mem_perc">Memory Percentage Alert</label>
+                                                                    <input id="last_name" type="text" value={NetworkRate} onChange={(e) => setNetworkRate(e.target.value)} />
+                                                                    <label for="rate_perc">Tx/Rx Rate Alert</label>
                                                                 </div>
                                                                 <br></br>
                                                                 <div class="input-field">
-                                                                    <input id="last_name" type="text" />
-                                                                    <label for="mem_used">Memory Used Alert</label>
+                                                                    <input id="last_name" type="text" value={TxData} onChange={(e) => setTxData(e.target.value)} />
+                                                                    <label for="tx_data">Tx Data Alert (MiB) </label>
                                                                 </div>
                                                                 <br></br>
                                                                 <div class="input-field">
-                                                                    <input id="last_name" type="text" />
-                                                                    <label for="cache_used">Cache Alert</label>
+                                                                    <input id="last_name" type="text" value={RxData} onChange={(e) => setRxData(e.target.value)} />
+                                                                    <label for="cache_used">Rx Data Alert (MiB)</label>
                                                                 </div>
-
-
-
-
-
-
 
                                                             </div>
                                                         </div>) : (<div></div>)
@@ -425,16 +625,52 @@ const ClusterInfo = () => {
 
 
                                                 </div>
+
+
+                                                <div style={{ display: 'flex', gap: '170px' }}>
+                                                    <Checkbox
+                                                        checked={checkedStatus}
+                                                        label="Notify when status changes"
+                                                        onChange={clickStatus}
+                                                    />
+                                                    {
+                                                        checkedNetwork ? (
+                                                            <>
+                                                                <Checkbox
+
+                                                                    checked={checkedDropped}
+                                                                    label="Notify when Packets are dropped"
+                                                                    onChange={clickDropped}
+                                                                />
+                                                                <Checkbox
+
+                                                                    checked={checkedError}
+                                                                    label="Notify when a Packet Error occurs"
+                                                                    onChange={clickError}
+                                                                />
+
+
+                                                            </>) : (<div></div>)
+                                                    }
+
+                                                </div>
+                                                <br></br>
+
+
+
+
+
                                                 {
                                                     checkedMemory || checkedCPU || checkedNetwork ? (<div style={{
                                                         margin: "10px auto",
                                                         maxWidth: "530px",
                                                         textAlign: "center"
                                                     }}>
-                                                        <button class="btn waves-effect waves-light green" type="submit" name="action" id='blue-button-bordered'>Set Alerts
+                                                        <button class="btn waves-effect waves-light green" onClick={() => handleSetAlert(item.Id)}>Set Alerts
                                                         </button>
                                                     </div>) : (<div></div>)
                                                 }
+
                                             </>
 
                                         </Modal>
