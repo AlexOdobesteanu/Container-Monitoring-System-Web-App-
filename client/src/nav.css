@@ -1,0 +1,33 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --black: #09090c;
+    --grey: #a4b2bc;
+    --white: #fff;
+    --background: rgba(137, 171, 245, 0.37);
+
+}
+
+/* .buttonSidebar::after::before {
+    content: "";
+    background-color: var(--white);
+    height: 2px;
+    width: 1rem;
+    position: absolute;
+}
+
+.buttonSidebar::after {
+    af
+
+    transform: $ {
+        props=>props.clicked ? "rotate(-135deg)": "rotate(0)"
+    }
+
+    ;
+} */

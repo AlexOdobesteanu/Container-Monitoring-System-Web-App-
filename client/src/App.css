@@ -66,8 +66,8 @@ Link {
 }
 
 .nav-elem {
-  border-right: 1px solid rgb(62, 68, 82) !important;
-  border-left: 1px solid rgb(62, 68, 82) !important;
+  /* border-right: 1px solid rgb(62, 68, 82) !important;
+  border-left: 1px solid rgb(62, 68, 82) !important; */
   box-shadow: 0 !important;
 }
 
@@ -170,7 +170,12 @@ Link {
 }
 
 #green-text {
-  color: rgb(76, 175, 80);
+  color: rgb(76, 175, 80) !important;
+}
+
+#green_input {
+  color: rgb(76, 175, 80) !important;
+  font-weight: bold !important;
 }
 
 #blue-text {
@@ -239,6 +244,14 @@ Link {
   border: 3px solid rgb(255, 99, 132) !important;
   color: rgb(255, 99, 132);
   background-color: rgba(255, 99, 132, 0.2);
+  font-size: large;
+  font-weight: bold;
+}
+
+#green-button {
+  border: 3px solid rgb(76, 175, 80) !important;
+  color: rgb(76, 175, 80);
+  background-color: rgb(76, 175, 80, 0.2);
   font-size: large;
   font-weight: bold;
 }

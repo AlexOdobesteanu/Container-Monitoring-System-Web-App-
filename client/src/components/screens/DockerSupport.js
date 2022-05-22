@@ -79,8 +79,9 @@ const DockerSupport = () => {
             return
         }
         if (!caDays || !certDays) {
-            caDays = '900'
-            certDays = '365'
+            setCaDays(900)
+            setCertDays(365)
+
         }
         fetch("/dockersupp", {
             method: "post",

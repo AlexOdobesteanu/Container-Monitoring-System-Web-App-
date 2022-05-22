@@ -4,9 +4,9 @@ var Docker = require('dockerode')
 var mydocker = new Docker({
     host: 'https://remote-api.127-0-0-1.nip.io',
     port: 2376,
-    ca: fs.readFileSync('ca.pem'),
-    cert: fs.readFileSync('cert.pem'),
-    key: fs.readFileSync('key.pem')
+    ca: fs.readFileSync('./configFiles/61d55a7468584592c1e39aef/alex/ca.pem'),
+    cert: fs.readFileSync('./configFiles/61d55a7468584592c1e39aef/alex/cert.pem'),
+    key: fs.readFileSync('./configFiles/61d55a7468584592c1e39aef/alex/key.pem')
 })
 
 
@@ -23,14 +23,14 @@ console.log("a")
 
 
 var container = mydocker.getContainer('4852cbe14deb')
-container.stats({ stream: false }, function (err, data) {
-    console.log(err)
-    console.log(data);
-});
+// container.stats({ stream: false }, function (err, data) {
+//     console.log(err)
+//     console.log(data);
+// });
 
-// container.stats({ stream: false }, function (err, stream) {
-//     console.log(stream)
-// })
+container.stats({ stream: false }, function (err, stream) {
+    console.log(stream.networks.eth0['rx_bytes'])
+})
 
 // mydocker.listContainers(function (err, containers) {
 //     console.log(err)

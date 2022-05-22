@@ -207,7 +207,7 @@ const ContainerData = () => {
                 setMemoryUsage(memoryUsage => [...memoryUsage, (parseFloat(result.data.memory_stats['usage']) / 1000000).toFixed(2)])
 
                 setFullData((parseFloat(result.data.memory_stats['limit']) / 1000000000).toFixed(2))
-                setCache(cache => [...cache, (parseFloat(result.data.memory_stats.stats['cache'] / 1000000)).toFixed(3)])
+                setCache(cache => [...cache, (parseFloat(result.data.memory_stats.stats['total_cache'] / 1000000)).toFixed(3)])
                 let cpuDelta = parseFloat(result.data.cpu_stats.cpu_usage['total_usage']) - parseFloat(result.data.precpu_stats.cpu_usage['total_usage'])
                 let systemDelta = parseFloat(result.data.cpu_stats.system_cpu_usage) - parseFloat(result.data.precpu_stats.system_cpu_usage)
 
@@ -279,7 +279,7 @@ const ContainerData = () => {
                         {
                             loading ? (<div class="col s12 m7" style={{
                                 margin: "40px auto",
-                                maxWidth: "1900px",
+                                maxWidth: "1300px",
                             }}>
                                 {
                                     MyData.State['Status'] === 'running' ? (<div class="card horizontal" >
@@ -344,7 +344,7 @@ const ContainerData = () => {
                         {
                             loading ? (<div class="col s12 m7" style={{
                                 margin: "40px auto",
-                                maxWidth: "1900px",
+                                maxWidth: "1300px",
                             }}>
                                 {
                                     MyData.State['Status'] === 'running' ? (<div class="card horizontal" >
@@ -449,6 +449,17 @@ const ContainerData = () => {
                                                                 data: memoryPerc.slice(-10)
                                                             }]
                                                         }} options={{
+                                                            plugins: {  // 'legend' now within object 'plugins {}'
+                                                                legend: {
+                                                                    labels: {
+                                                                        color: "white",  // not 'fontColor:' anymore
+                                                                        // fontSize: 18  // not 'fontSize:' anymore
+                                                                        font: {
+                                                                            size: 15 // 'size' now within object 'font {}'
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
                                                             scales: {
                                                                 x: {
                                                                     ticks: {
@@ -481,9 +492,15 @@ const ContainerData = () => {
                                                                 data: memoryUsage.slice(-10)
                                                             }]
                                                         }} options={{
-                                                            legend: {
-                                                                labels: {
-                                                                    fontColor: 'white'
+                                                            plugins: {  // 'legend' now within object 'plugins {}'
+                                                                legend: {
+                                                                    labels: {
+                                                                        color: "white",  // not 'fontColor:' anymore
+                                                                        // fontSize: 18  // not 'fontSize:' anymore
+                                                                        font: {
+                                                                            size: 15 // 'size' now within object 'font {}'
+                                                                        }
+                                                                    }
                                                                 }
                                                             },
                                                             scales: {
@@ -529,11 +546,17 @@ const ContainerData = () => {
                                                             }]
                                                         }} options={{
                                                             maintainAspectRatio: false,
-                                                            legend: {
-                                                                labels: {
-                                                                    fontColor: 'white'
+                                                            plugins: {  // 'legend' now within object 'plugins {}'
+                                                                legend: {
+                                                                    labels: {
+                                                                        color: "white",  // not 'fontColor:' anymore
+                                                                        // fontSize: 18  // not 'fontSize:' anymore
+                                                                        font: {
+                                                                            size: 15 // 'size' now within object 'font {}'
+                                                                        }
+                                                                    }
                                                                 }
-                                                            },
+                                                            }
 
                                                         }} height={400} width={600} />
 
@@ -548,9 +571,15 @@ const ContainerData = () => {
                                                                 data: cache.slice(-10)
                                                             }]
                                                         }} options={{
-                                                            legend: {
-                                                                labels: {
-                                                                    fontColor: 'white'
+                                                            plugins: {  // 'legend' now within object 'plugins {}'
+                                                                legend: {
+                                                                    labels: {
+                                                                        color: "white",  // not 'fontColor:' anymore
+                                                                        // fontSize: 18  // not 'fontSize:' anymore
+                                                                        font: {
+                                                                            size: 15 // 'size' now within object 'font {}'
+                                                                        }
+                                                                    }
                                                                 }
                                                             },
                                                             scales: {
@@ -594,6 +623,17 @@ const ContainerData = () => {
                                                                 data: cpuPercent.slice(-10)
                                                             }]
                                                         }} options={{
+                                                            plugins: {  // 'legend' now within object 'plugins {}'
+                                                                legend: {
+                                                                    labels: {
+                                                                        color: "white",  // not 'fontColor:' anymore
+                                                                        // fontSize: 18  // not 'fontSize:' anymore
+                                                                        font: {
+                                                                            size: 15 // 'size' now within object 'font {}'
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
                                                             scales: {
                                                                 x: {
                                                                     beginAtZero: true,
@@ -643,6 +683,17 @@ const ContainerData = () => {
                                                                 data: kernelMode.slice(-10)
                                                             }]
                                                         }} options={{
+                                                            plugins: {  // 'legend' now within object 'plugins {}'
+                                                                legend: {
+                                                                    labels: {
+                                                                        color: "white",  // not 'fontColor:' anymore
+                                                                        // fontSize: 18  // not 'fontSize:' anymore
+                                                                        font: {
+                                                                            size: 15 // 'size' now within object 'font {}'
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
                                                             scales: {
                                                                 x: {
                                                                     beginAtZero: true,
@@ -686,6 +737,17 @@ const ContainerData = () => {
                                                                 data: rate.slice(-10)
                                                             }]
                                                         }} options={{
+                                                            plugins: {  // 'legend' now within object 'plugins {}'
+                                                                legend: {
+                                                                    labels: {
+                                                                        color: "white",  // not 'fontColor:' anymore
+                                                                        // fontSize: 18  // not 'fontSize:' anymore
+                                                                        font: {
+                                                                            size: 15 // 'size' now within object 'font {}'
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
                                                             scales: {
                                                                 x: {
                                                                     beginAtZero: true,
@@ -735,6 +797,17 @@ const ContainerData = () => {
                                                                 data: rxBytes.slice(-10)
                                                             }]
                                                         }} options={{
+                                                            plugins: {  // 'legend' now within object 'plugins {}'
+                                                                legend: {
+                                                                    labels: {
+                                                                        color: "white",  // not 'fontColor:' anymore
+                                                                        // fontSize: 18  // not 'fontSize:' anymore
+                                                                        font: {
+                                                                            size: 15 // 'size' now within object 'font {}'
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
                                                             scales: {
                                                                 x: {
                                                                     beginAtZero: true,
@@ -783,9 +856,15 @@ const ContainerData = () => {
                                                                 data: rxPackets.slice(-10)
                                                             }]
                                                         }} options={{
-                                                            legend: {
-                                                                labels: {
-                                                                    fontColor: 'white'
+                                                            plugins: {  // 'legend' now within object 'plugins {}'
+                                                                legend: {
+                                                                    labels: {
+                                                                        color: "white",  // not 'fontColor:' anymore
+                                                                        // fontSize: 18  // not 'fontSize:' anymore
+                                                                        font: {
+                                                                            size: 15 // 'size' now within object 'font {}'
+                                                                        }
+                                                                    }
                                                                 }
                                                             },
                                                             scales: {
@@ -857,6 +936,17 @@ const ContainerData = () => {
                                                             }
                                                             ]
                                                         }} options={{
+                                                            plugins: {  // 'legend' now within object 'plugins {}'
+                                                                legend: {
+                                                                    labels: {
+                                                                        color: "white",  // not 'fontColor:' anymore
+                                                                        // fontSize: 18  // not 'fontSize:' anymore
+                                                                        font: {
+                                                                            size: 15 // 'size' now within object 'font {}'
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
                                                             scales: {
                                                                 x: {
                                                                     beginAtZero: true,

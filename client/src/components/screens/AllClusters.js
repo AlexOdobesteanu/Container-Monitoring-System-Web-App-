@@ -18,6 +18,8 @@ const AllClusters = () => {
     const [containersData, setcontainersData] = useState([])
     const [data, setData] = useState([])
 
+
+
     function download(nick) {
         axios({
             url: "/download",
@@ -56,13 +58,21 @@ const AllClusters = () => {
     }, [])
     return (
         <>
+            <div style={{ textAlign: "center" }}>
+                <b id='white-text' style={{ fontSize: '30px', fontStyle: 'italic' }}>All Docker instances</b>
+            </div>
+
             {loading ? (<div class="col s12 m7" style={{
                 margin: "50px auto",
                 maxWidth: "900px",
                 textAlign: "center"
             }}>
+
+
+
                 <Collapsible popout>
                     {
+
                         data.map(item => {
 
                             return (

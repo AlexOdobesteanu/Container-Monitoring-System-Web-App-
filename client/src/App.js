@@ -13,6 +13,10 @@ import AllClusters from './components/screens/AllClusters';
 import { reducer, initialState } from './reducers/userReducer'
 import ClusterInfo from './components/screens/ClusterInfo';
 import ContainerData from './components/screens/ContainerData';
+import Notification from './components/screens/Notification';
+import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import 'react-pro-sidebar/dist/css/styles.css';
+import Sidebar from './components/Sidebar';
 
 export const UserContext = createContext()
 
@@ -71,11 +75,13 @@ const Routing = () => {
 
             </Route>
 
+            <Route path="/alerts" element={<Notification></Notification>}>
+
+            </Route>
+
 
 
             <Route path="/dockersupport" element={<DockerSupport></DockerSupport>}>
-
-
             </Route>
 
 
@@ -92,11 +98,15 @@ function App() {
             minHeight: '100vh',
             overflow: 'auto'
         }}>
+
             <UserContext.Provider value={{ state, dispatch }}>
                 <BrowserRouter>
 
 
                     <NavBar></NavBar>
+                    <Sidebar>
+                    </Sidebar>
+
                     <Routing></Routing>
 
 

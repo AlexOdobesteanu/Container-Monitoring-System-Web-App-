@@ -47,15 +47,18 @@ const alertSchema = new mongoose.Schema({
     },
     StatusChangeAlert:
     {
-        type: Boolean
+        type: Boolean,
+        default: false
     },
     PacketDroppedAlert:
     {
-        type: Boolean
+        type: Boolean,
+        default: false
     },
     PacketErrorAlert:
     {
-        type: Boolean
+        type: Boolean,
+        default: false
     }
 })
 
