@@ -7,12 +7,35 @@ import { } from "materialize-css"
 import { Parallax, Background } from 'react-parallax';
 import { HashLoader } from 'react-spinners';
 import M from 'materialize-css'
+import { Collapsible, CollapsibleItem, Icon, TextInput, Button, Modal, Checkbox } from 'react-materialize'
 
 
 import "../../App.css"
+import { internal_resolveProps } from '@mui/utils';
 
 
 function useInterval(callback, delay) {
+    const savedCallback = useRef();
+
+    // Remember the latest callback.
+    useEffect(() => {
+        savedCallback.current = callback;
+    }, [callback]);
+
+    // Set up the interval.
+    useEffect(() => {
+        function tick() {
+            savedCallback.current();
+        }
+
+        if (delay !== null) {
+            let id = setInterval(tick, delay);
+            return () => clearInterval(id);
+        }
+    }, [delay]);
+}
+
+function useInterval2(callback, delay) {
     const savedCallback = useRef();
 
     // Remember the latest callback.
@@ -40,6 +63,10 @@ const ContainerData = () => {
     const idContainer = location.state.idContainer
     const domainName = location.state.domainName
     const nickname = location.state.nickname
+    const [FSChanges, setFSChanges] = useState([])
+    const [Processes, setProcesses] = useState([])
+
+    const [loadingFS, setLoadingFS] = useState(true)
 
 
 
@@ -74,31 +101,42 @@ const ContainerData = () => {
 
     const [delay, setDelay] = useState(4000);
     const [isRunning, setIsRunning] = useState(false);
-
+    const [isRunning2, setIsRunning2] = useState(true);
     const [graph, setGraph] = useState(false);
     const [MyData, setData] = useState([])
+
+
+    const getFSChanges = () => {
+
+    }
 
 
     const renderNetworks = () => {
         if (networks.length != 0) {
             return (
-                <div class="card-content" style={{ width: '33%', textAlign: 'left', marginLeft: '150px' }}>
+                <div class="card-content" style={{ width: '33%', textAlign: 'left', marginLeft: '100px', display: 'flex', gap: '50px' }}>
                     {
                         networks.map(item => {
                             return (
 
                                 <div>
-                                    <p id='white-text-large'>Network Name: <b id='blue-text'>{item}</b></p>
-                                    <p id='white-text-large'>MAC Address: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].MacAddress}</b></p>
-                                    <br></br>
-                                    <p id='white-text-large'>IP Address: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].IPAddress}</b></p>
-                                    <p id='white-text-large'>IP Prefix Length: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].IPPrefixLen}</b></p>
-                                    <p id='white-text-large'>Gateway: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].Gateway}</b></p>
-                                    <br></br>
-                                    <p id='white-text-large'>IPv6 Address: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].GlobalIPv6Address}</b></p>
-                                    <p id='white-text-large'>IPv6 Prefix Length: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].GlobalIPv6PrefixLen}</b></p>
-                                    <p id='white-text-large'>IPv6 Gateway: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].IPv6Gateway}</b></p>
-                                    <br></br>
+                                    <div>
+                                        <p id='white-text-large'>Network Name: <b id='blue-text'>{item}</b></p>
+                                        <p id='white-text-large'>MAC Address: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].MacAddress}</b></p>
+                                    </div>
+
+                                    <div>
+                                        <p id='white-text-large'>IP Address: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].IPAddress}</b></p>
+                                        <p id='white-text-large'>IP Prefix Length: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].IPPrefixLen}</b></p>
+                                        <p id='white-text-large'>Gateway: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].Gateway}</b></p>
+                                    </div>
+
+                                    <div>
+                                        <p id='white-text-large'>IPv6 Address: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].GlobalIPv6Address}</b></p>
+                                        <p id='white-text-large'>IPv6 Prefix Length: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].GlobalIPv6PrefixLen}</b></p>
+                                        <p id='white-text-large'>IPv6 Gateway: <b id='blue-text'>{MyData.NetworkSettings.Networks[item].IPv6Gateway}</b></p>
+                                        <br></br>
+                                    </div>
                                 </div>
 
                             )
@@ -112,7 +150,7 @@ const ContainerData = () => {
     const renderPorts = () => {
         if (Ports.length != 0) {
             return (
-                <div class="card-content" style={{ width: '33%', textAlign: 'left', marginLeft: '150px' }}>
+                <div class="card-content" style={{ width: '33%', textAlign: 'left', marginLeft: '150px', display: 'flex', gap: '50px' }}>
                     {
                         Ports.map(item => {
                             if (MyData.NetworkSettings.Ports[item] != null) {
@@ -184,8 +222,96 @@ const ContainerData = () => {
         setGraph(false)
     }
 
+    const renderProcesses = (list) => {
+
+        return (
+            <div>
+                {
+                    list.map(item => {
+                        return (
+                            <div>
+                                <b id='blue-text'>{item}</b>
+                            </div>
+                        )
+                    })
+                }
+
+
+            </div>
+        )
+    }
+
+    const renderTitles = (list) => {
+
+        return (
+            <div>
+                {
+                    list.map(item => {
+                        return (
+                            <div>
+                                <b id='blue-text'>{item}</b>
+                            </div>
+                        )
+                    })
+                }
+
+            </div>
+        )
+    }
+
+    useInterval2(() => {
+        console.log("alex")
+
+
+
+    }, isRunning2 ? delay : null);
 
     useInterval(() => {
+        fetch('/GetProcesses',
+            {
+                method: "post",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    {
+                        idContainer: idContainer,
+                        domainName: domainName,
+                        nickname: nickname
+                    }
+                )
+            }
+        ).then(res => res.json())
+            .then(result => {
+                if (result != null) {
+                    setProcesses(result.data)
+                }
+                // console.log(result.data)
+            })
+
+
+        fetch('/FSChanges',
+            {
+                method: "post",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    {
+                        idContainer: idContainer,
+                        domainName: domainName,
+                        nickname: nickname
+                    }
+                )
+            }
+        ).then(res => res.json())
+            .then(result => {
+                console.log(result.changes)
+                setFSChanges(result.changes)
+            })
+
         fetch("/containersstats", {
             method: "post",
             headers:
@@ -202,33 +328,108 @@ const ContainerData = () => {
             .then(result => {
                 // console.log((parseFloat(result.data.memory_stats['usage']) / parseFloat(result.data.memory_stats['limit'])) * 100)
                 setDates(dates => [...dates, new Date().toLocaleString()])
+                if (dates.length >= 20) {
+                    setDates(dates.slice(10, dates.length))
+                }
+
 
                 setMemoryPerc(memoryPerc => [...memoryPerc, ((parseFloat(result.data.memory_stats['usage']) / parseFloat(result.data.memory_stats['limit'])) * 100).toFixed(3)])
+                if (memoryPerc.length >= 20) {
+                    setMemoryPerc(memoryPerc.slice(10, memoryPerc.length))
+                }
+
+
                 setMemoryUsage(memoryUsage => [...memoryUsage, (parseFloat(result.data.memory_stats['usage']) / 1000000).toFixed(2)])
+                if (memoryUsage.length >= 20) {
+                    setMemoryUsage(memoryUsage.slice(10, memoryUsage.length))
+                }
+
 
                 setFullData((parseFloat(result.data.memory_stats['limit']) / 1000000000).toFixed(2))
+
+
+
+
                 setCache(cache => [...cache, (parseFloat(result.data.memory_stats.stats['total_cache'] / 1000000)).toFixed(3)])
+                if (cache.length >= 20) {
+                    setCache(cache.slice(10, cache.length))
+                }
+
+
+
                 let cpuDelta = parseFloat(result.data.cpu_stats.cpu_usage['total_usage']) - parseFloat(result.data.precpu_stats.cpu_usage['total_usage'])
                 let systemDelta = parseFloat(result.data.cpu_stats.system_cpu_usage) - parseFloat(result.data.precpu_stats.system_cpu_usage)
-
                 setOnlineCPU(result.data.cpu_stats['online_cpus'])
+
+
                 setCpuPercent(cpuPercent => [...cpuPercent, parseFloat(parseFloat((cpuDelta / systemDelta) * result.data.cpu_stats['online_cpus'] * 100)).toFixed(3)])
+                if (cpuPercent.length >= 20) {
+                    setCpuPercent(cpuPercent.slice(10, cpuPercent.length))
+                }
+
 
                 setUserMode(userMode => [...userMode, parseFloat(parseFloat((parseFloat(result.data.cpu_stats.cpu_usage['usage_in_usermode']) - parseFloat(result.data.precpu_stats.cpu_usage['usage_in_usermode'])) / systemDelta) * result.data.cpu_stats['online_cpus'] * 100).toFixed(3)])
+                if (userMode.length >= 20) {
+                    setUserMode(userMode.slice(10, userMode.length))
+                }
+
+
                 setKernelMode(kernelMode => [...kernelMode, parseFloat(parseFloat((parseFloat(result.data.cpu_stats.cpu_usage['usage_in_kernelmode']) - parseFloat(result.data.precpu_stats.cpu_usage['usage_in_kernelmode'])) / systemDelta) * result.data.cpu_stats['online_cpus'] * 100).toFixed(3)])
+                if (kernelMode.length >= 20) {
+                    setKernelMode(kernelMode.slice(10, kernelMode.length))
+                }
+
                 //MEMORY DOUGHNUT
 
 
 
+
                 setRxBytes(rxBytes => [...rxBytes, parseFloat(parseFloat(result.data.networks.eth0['rx_bytes']) / 1000000).toFixed(3)])
+                if (rxBytes.length >= 20) {
+                    setRxBytes(rxBytes.slice(10, rxBytes.length))
+                }
+
+
                 setTxBytes(txBytes => [...txBytes, parseFloat(parseFloat(result.data.networks.eth0['tx_bytes']) / 1000000).toFixed(3)])
+                if (txBytes.length >= 20) {
+                    setTxBytes(txBytes.slice(10, txBytes.length))
+                }
+
                 setRate(rate => [...rate, parseFloat(parseFloat(result.data.networks.eth0['tx_bytes']) / parseFloat(result.data.networks.eth0['rx_bytes'])).toFixed(3)])
+                if (rate.length >= 20) {
+                    setRate(rate.slice(10, rate.length))
+                }
+
                 setRxPackets(rxPackets => [...rxPackets, parseFloat(result.data.networks.eth0['rx_packets'])])
+                if (rxPackets.length >= 20) {
+                    setRxPackets(rxPackets.slice(10, rxPackets.length))
+                }
+
                 setTxPackets(txPackets => [...txPackets, parseFloat(result.data.networks.eth0['tx_packets'])])
+                if (txPackets.length >= 20) {
+                    setTxPackets(txPackets.slice(10, txPackets.length))
+                }
+
                 setRxDropped(rxDropped => [...rxDropped, parseFloat(result.data.networks.eth0['rx_dropped'])])
+                if (rxDropped.length >= 20) {
+                    setRxDropped(rxDropped.slice(10, rxDropped.length))
+                }
+
                 setTxDropped(txDropped => [...txDropped, parseFloat(result.data.networks.eth0['tx_dropped'])])
+                if (txDropped.length >= 20) {
+                    setTxDropped(txDropped.slice(10, txDropped.length))
+                }
+
                 setRxErrors(rxErrors => [...rxErrors, parseFloat(result.data.networks.eth0['rx_errors'])])
+                if (rxErrors.length >= 20) {
+                    setRxErrors(rxErrors.slice(10, rxErrors.length))
+                }
+
+
                 setTxErrors(txErrors => [...txErrors, parseFloat(result.data.networks.eth0['tx_errors'])])
+                if (txErrors.length >= 20) {
+                    setTxErrors(txErrors.slice(10, txErrors.length))
+                }
 
                 // setRxBytes(rxBytes => [...rxBytes, parseFloat(result.data.networks.networks[0]['rx_bytes'])])
 
@@ -246,6 +447,52 @@ const ContainerData = () => {
     }, isRunning ? delay : null);
 
     useEffect(() => {
+        fetch('/GetProcesses',
+            {
+                method: "post",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    {
+                        idContainer: idContainer,
+                        domainName: domainName,
+                        nickname: nickname
+                    }
+                )
+            }
+        ).then(res => res.json())
+            .then(result => {
+                if (result != null) {
+                    setProcesses(result.data)
+                }
+                console.log(result.data)
+            })
+
+        fetch('/FSChanges',
+            {
+                method: "post",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    {
+                        idContainer: idContainer,
+                        domainName: domainName,
+                        nickname: nickname
+                    }
+                )
+            }
+        ).then(res => res.json())
+            .then(result => {
+                console.log('bbb')
+                console.log(result.changes)
+
+                setFSChanges(result.changes)
+            })
+
         fetch("/containersfullinfo", {
             method: "post",
             headers:
@@ -261,7 +508,7 @@ const ContainerData = () => {
         }).then(res => res.json())
             .then(result => {
                 setData(result.data)
-                console.log(result.data)
+                // console.log(result.data)
                 setNetworks(Object.keys(result.data.NetworkSettings.Networks))
                 setLoading(true)
                 setPorts(Object.keys(result.data.NetworkSettings.Ports))
@@ -279,25 +526,33 @@ const ContainerData = () => {
                         {
                             loading ? (<div class="col s12 m7" style={{
                                 margin: "40px auto",
-                                maxWidth: "1300px",
+                                maxWidth: "1600px",
                             }}>
                                 {
                                     MyData.State['Status'] === 'running' ? (<div class="card horizontal" >
-                                        <div id='flex' style={{ width: '100%' }}>
-                                            <div class="card-content" style={{ width: '33%', textAlign: 'left', marginLeft: '150px' }}>
-                                                <p id='white-text-large'>Type: <b id='blue-text'>Container</b></p>
-                                                <p id='white-text-large'>Name: <b id='blue-text'>{MyData.Name}</b></p>
-                                                <br></br>
-                                                <p id='white-text-large'>Created At: <b id='blue-text'>{new Date(MyData.Created).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
-                                                <p id='white-text-large'>Started At: <b id='blue-text'>{new Date(MyData.State['StartedAt']).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
-                                                <p id='white-text-large'>Finished At: <b id='blue-text'>{new Date(MyData.State['FinishedAt']).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
-                                                <br></br>
-                                                <p id='white-text-large'>PID: <b id='blue-text'>{MyData.State['Pid']}</b></p>
-                                                <p id='white-text-large'>Platform: <b id='blue-text'>{MyData.Platform}</b></p>
-                                                <p id='white-text-large'>Status: <b id='blue-text'>{MyData.State['Status']}</b></p>
+
+                                        <div>
+                                            <div id='flex' style={{ width: '100%', maxWidth: '100%' }}>
+                                                <div class="card-content" style={{ width: '33%', textAlign: 'left', marginLeft: '150px' }}>
+                                                    <p id='white-text-large'>Type: <b id='blue-text'>Container</b></p>
+                                                    <p id='white-text-large'>Name: <b id='blue-text'>{MyData.Name}</b></p>
+                                                    <br></br>
+                                                    <p id='white-text-large'>Created At: <b id='blue-text'>{new Date(MyData.Created).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
+                                                    <p id='white-text-large'>Started At: <b id='blue-text'>{new Date(MyData.State['StartedAt']).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
+                                                    <p id='white-text-large'>Finished At: <b id='blue-text'>{new Date(MyData.State['FinishedAt']).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
+                                                    <br></br>
+                                                    <p id='white-text-large'>PID: <b id='blue-text'>{MyData.State['Pid']}</b></p>
+                                                    <p id='white-text-large'>Platform: <b id='blue-text'>{MyData.Platform}</b></p>
+                                                    <p id='white-text-large'>Status: <b id='blue-text'>{MyData.State['Status']}</b></p>
+
+                                                </div>
+
+                                                {renderNetworks()}
+                                                {renderPorts()}
+
+
                                             </div>
-                                            {renderNetworks()}
-                                            {renderPorts()}
+
                                         </div>
                                     </div>) : (
                                         <div class="card horizontal" >
@@ -325,9 +580,141 @@ const ContainerData = () => {
                                     textAlign: "center"
                                 }}>
                                     {
-                                        MyData.State['Status'] === 'running' ? (<div><button className="btn waves-effect waves-light" id='blue-button' onClick={() => showGraph()}>
-                                            View resource usage
-                                        </button></div>) : (<div></div>)
+                                        MyData.State['Status'] === 'running' ? (
+                                            <div>
+                                                <button className="btn waves-effect waves-light" id='blue-button' onClick={() => showGraph()}>
+                                                    View resource usage
+                                                </button>
+
+                                                <Modal
+                                                    actions={[
+                                                        <div id='modal-bottom'>
+                                                            <Button flat modal="close" node="button" waves="green" id='red-button'>Close</Button>
+                                                        </div>
+                                                    ]}
+                                                    bottomSheet={false}
+                                                    fixedFooter={true}
+                                                    header="Current Processes"
+                                                    id="Modal-10"
+                                                    open={false}
+                                                    options={{
+                                                        dismissible: true,
+                                                        endingTop: '10%',
+                                                        inDuration: 250,
+                                                        onCloseEnd: null,
+                                                        onCloseStart: null,
+                                                        onOpenEnd: null,
+                                                        onOpenStart: null,
+                                                        opacity: 0.5,
+                                                        outDuration: 250,
+                                                        preventScrolling: false,
+                                                        startingTop: '4%'
+                                                    }}
+                                                    trigger={<button style={{ marginLeft: '20px' }} className="btn waves-effect waves-light" id='blue-button'>
+                                                        View processes
+                                                    </button>}
+                                                >
+                                                    {/* <b id='white-text' style={{ fontSize: '20px' }}>Total Processes: <b id='blue-text'> {Processes.Processes[0].length}</b></b> */}
+                                                    <div style={{ display: 'flex' }}>
+                                                        <div style={{ flex: '1 1 0px' }}>
+                                                            <br></br>
+                                                            <b id='white-text' style={{ fontSize: '20px' }}>Processes:</b>
+                                                            <br></br>
+                                                            <div>
+                                                                {
+                                                                    renderProcesses(Processes.Processes[0])
+                                                                }
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div style={{ flex: '1 1 0px' }}>
+                                                            <br></br>
+                                                            <b id='white-text' style={{ fontSize: '20px' }}>Titles:</b>
+                                                            <br></br>
+
+                                                            {renderTitles(Processes.Titles)}
+
+                                                        </div>
+                                                    </div>
+
+                                                </Modal>
+
+                                                <Modal
+                                                    actions={[
+                                                        <div id='modal-bottom'>
+                                                            <Button flat modal="close" node="button" waves="green" id='red-button'>Close</Button>
+                                                        </div>
+                                                    ]}
+                                                    bottomSheet={false}
+                                                    fixedFooter={true}
+                                                    header="Filesystem changes"
+                                                    id="Modal-10"
+                                                    open={false}
+                                                    options={{
+                                                        dismissible: true,
+                                                        endingTop: '10%',
+                                                        inDuration: 250,
+                                                        onCloseEnd: null,
+                                                        onCloseStart: null,
+                                                        onOpenEnd: null,
+                                                        onOpenStart: null,
+                                                        opacity: 0.5,
+                                                        outDuration: 250,
+                                                        preventScrolling: false,
+                                                        startingTop: '4%'
+                                                    }}
+                                                    trigger={<button style={{ marginLeft: '20px' }} className="btn waves-effect waves-light" id='blue-button'>
+                                                        View filesystem changes
+                                                    </button>}
+                                                >
+                                                    {
+                                                        FSChanges["type"] != "Buffer" ?
+
+                                                            <>
+                                                                <b id='white-text' style={{ fontSize: '20px' }}>Total Changes: <b id='blue-text'> {FSChanges.length}</b></b>
+
+                                                                {
+                                                                    FSChanges.map(item => {
+
+                                                                        return (
+                                                                            <div >
+
+                                                                                <div class="card horizontal">
+                                                                                    <div class="card-stacked">
+                                                                                        <div class="card-content">
+
+                                                                                            <p id='white-text'>File: <b style={{ color: 'rgb(32,151,207)' }}> {item.Path}</b></p>
+                                                                                            <>
+                                                                                                {
+                                                                                                    item.Kind == 0 ? <p id='white-text'>Type: <b style={{ color: 'rgb(32,151,207)' }}> Modified</b></p> :
+                                                                                                        <>
+                                                                                                            {
+                                                                                                                item.Kind == 1 ? <p id='white-text'>Type: <b style={{ color: 'rgb(32,151,207)' }}> Added</b></p> :
+                                                                                                                    <>
+                                                                                                                        <p id='white-text'>Type: <b style={{ color: 'rgb(32,151,207)' }}> Deleted</b></p>
+                                                                                                                    </>
+                                                                                                            }
+                                                                                                        </>
+                                                                                                }
+                                                                                            </>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        )
+
+                                                                    })
+
+                                                                }
+                                                            </> : <b id='White-text'>No Filesystem changes</b>
+                                                    }
+
+
+
+                                                </Modal>
+
+                                            </div>) : (<div></div>)
                                     }
                                 </div>
 
@@ -335,7 +722,7 @@ const ContainerData = () => {
                                 : (<div style={style}><HashLoader color='white' speedMultiplier={2}></HashLoader></div>)
                         }
 
-                    </div>)
+                    </div >)
                     : (<div style={{
                         background: "rgb(40,44,52)",
                         minHeight: '540vh',
@@ -391,9 +778,84 @@ const ContainerData = () => {
                                     textAlign: "center"
                                 }}>
                                     {
-                                        MyData.State['Status'] === 'running' ? (<div><button className="btn waves-effect waves-light" id='blue-button' onClick={() => showGraph()}>
-                                            View resource usage
-                                        </button></div>) : (<div></div>)
+                                        MyData.State['Status'] === 'running' ? (
+                                            <div>
+                                                <button className="btn waves-effect waves-light" id='blue-button' onClick={() => showGraph()}>
+                                                    View resource usage
+                                                </button>
+                                                <Modal
+                                                    actions={[
+                                                        <div id='modal-bottom'>
+                                                            <Button flat modal="close" node="button" waves="green" id='red-button'>Close</Button>
+                                                        </div>
+                                                    ]}
+                                                    bottomSheet={false}
+                                                    fixedFooter={true}
+                                                    header="Filesystem changes"
+                                                    id="Modal-10"
+                                                    open={false}
+                                                    options={{
+                                                        dismissible: true,
+                                                        endingTop: '10%',
+                                                        inDuration: 250,
+                                                        onCloseEnd: null,
+                                                        onCloseStart: null,
+                                                        onOpenEnd: null,
+                                                        onOpenStart: null,
+                                                        opacity: 0.5,
+                                                        outDuration: 250,
+                                                        preventScrolling: false,
+                                                        startingTop: '4%'
+                                                    }}
+                                                    trigger={<button style={{ marginLeft: '20px' }} className="btn waves-effect waves-light" id='blue-button'>
+                                                        View filesystem changes
+                                                    </button>}
+                                                >
+                                                    {
+                                                        FSChanges["type"] != "Buffer" ?
+
+                                                            <>
+                                                                <b id='white-text' style={{ fontSize: '20px' }}>Total Changes: <b id='blue-text'> {FSChanges.length}</b></b>
+
+                                                                {
+                                                                    FSChanges.map(item => {
+
+                                                                        return (
+                                                                            <div>
+                                                                                <div class="card horizontal">
+                                                                                    <div class="card-stacked">
+                                                                                        <div class="card-content">
+
+                                                                                            <p id='white-text'>File: <b style={{ color: 'rgb(32,151,207)' }}> {item.Path}</b></p>
+                                                                                            <>
+                                                                                                {
+                                                                                                    item.Kind == 0 ? <p id='white-text'>Type: <b style={{ color: 'rgb(32,151,207)' }}> Modified</b></p> :
+                                                                                                        <>
+                                                                                                            {
+                                                                                                                item.Kind == 1 ? <p id='white-text'>Type: <b style={{ color: 'rgb(32,151,207)' }}> Added</b></p> :
+                                                                                                                    <>
+                                                                                                                        <p id='white-text'>Type: <b style={{ color: 'rgb(32,151,207)' }}> Deleted</b></p>
+                                                                                                                    </>
+                                                                                                            }
+                                                                                                        </>
+                                                                                                }
+                                                                                            </>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        )
+
+                                                                    })
+
+                                                                }
+                                                            </> : <b id='White-text'>No Filesystem changes</b>
+                                                    }
+
+
+
+                                                </Modal>
+                                            </div>) : (<div></div>)
                                     }
 
 
@@ -995,7 +1457,7 @@ const ContainerData = () => {
 
 
                             <div><p id='yellow-textLarge' className='centered'>MEMORY STATS</p></div>
-                            <div style={{ display: 'flex' }}>
+                            <div style={{ display: 'flex', marginTop: '30px' }}>
                                 <div class="circle-centered" style={{ margin: '50px auto' }}>
                                     <div style={{ textAlign: 'center' }}><b class="text-circle-centered">{memoryPerc[memoryPerc.length - 1]} % MEM used</b></div>
                                 </div>
@@ -1058,7 +1520,7 @@ const ContainerData = () => {
                         }
                     </div >)
             }
-        </div>
+        </div >
     )
 
 }

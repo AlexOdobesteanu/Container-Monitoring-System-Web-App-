@@ -14,9 +14,12 @@ import { reducer, initialState } from './reducers/userReducer'
 import ClusterInfo from './components/screens/ClusterInfo';
 import ContainerData from './components/screens/ContainerData';
 import Notification from './components/screens/Notification';
+import EditInstance from './components/screens/EditInstance';
+import AlertHistory from './components/screens/AlertHistory';
 import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import Sidebar from './components/Sidebar';
+import GeneralData from './components/screens/GeneralData'
 
 export const UserContext = createContext()
 
@@ -62,7 +65,16 @@ const Routing = () => {
 
             </Route>
 
+            <Route path="/alertHistory" element={<AlertHistory></AlertHistory>}>
+
+            </Route>
+
             <Route path="/allclusters" element={<AllClusters></AllClusters>}>
+
+
+            </Route>
+
+            <Route path="/generaldata" element={<GeneralData></GeneralData>}>
 
 
             </Route>
@@ -76,6 +88,10 @@ const Routing = () => {
             </Route>
 
             <Route path="/alerts" element={<Notification></Notification>}>
+
+            </Route>
+
+            <Route path="/EditInstance" element={<EditInstance></EditInstance>}>
 
             </Route>
 

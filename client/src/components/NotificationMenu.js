@@ -19,11 +19,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import { Button } from 'react-materialize';
 import M from 'materialize-css'
+import useLongPress from './useLongPress';
+import ConfirmDialog from './screens/ConfirmDialog'
 
 
 const NotificationMenu = ({ anchorEl, handleClose, open, menuItems }) => {
     const [menu, setMenu] = useState(menuItems)
     const navigate = useNavigate()
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subtitle: '' })
 
     useEffect(() => {
         setMenu(menuItems)
@@ -61,6 +64,11 @@ const NotificationMenu = ({ anchorEl, handleClose, open, menuItems }) => {
 
 
     const handleDelete = (id) => {
+
+        setConfirmDialog({
+            ...confirmDialog,
+            isOpen: false
+        })
         setMenu(menu.filter(item => item._id != id))
 
 
@@ -105,6 +113,11 @@ const NotificationMenu = ({ anchorEl, handleClose, open, menuItems }) => {
 
     }
 
+    const onLongPress = useLongPress()
+
+
+
+
 
     return (
         <>
@@ -122,13 +135,19 @@ const NotificationMenu = ({ anchorEl, handleClose, open, menuItems }) => {
                     </div>
                     <br></br>
                     <Divider></Divider>
+                    <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog}></ConfirmDialog>
 
                     <MenuList>
 
                         {
                             menuItems != null ? <div>{menuItems.map((item) => (
                                 <div>
-                                    <MenuItem onClick={() => ViewCluster(item.idCluster)}>
+                                    <MenuItem onDoubleClick={() => ViewCluster(item.idCluster)} {...onLongPress(() => setConfirmDialog({
+                                        isOpen: true,
+                                        title: 'Are you sure you want to delete this notification ?',
+                                        subtitle: "You can't undo this operation",
+                                        onConfirm: () => { handleDelete(item._id) }
+                                    }))}>
 
                                         <ListItemIcon>
                                             <FmdBadIcon fontSize='large' style={{ color: '#d32d2f' }}></FmdBadIcon>
@@ -136,17 +155,22 @@ const NotificationMenu = ({ anchorEl, handleClose, open, menuItems }) => {
                                         <Typography style={{ whiteSpace: 'pre-line' }}>
                                             <b style={{ color: '#d32d2f' }}>{item.TypeOfNotification}</b>
                                             <br></br>
-                                            <b style={{ color: '#d32d2f' }} >Cluster ID: </b><b>{item.idCluster}</b>
+                                            {/* <b style={{ color: '#d32d2f' }} >Cluster ID: </b><b>{item.idCluster}</b>
+                                            <br></br> */}
+                                            <b style={{ color: '#d32d2f' }} >Cluster Name: </b><b>{item.ClusterName}</b>
                                             <br></br>
-                                            <b style={{ color: '#d32d2f' }} >Container ID: </b><b>{item.idContainer}</b>
+                                            {/* <b style={{ color: '#d32d2f' }} >Container ID: </b><b>{item.idContainer}</b>
+                                            <br></br> */}
+                                            <b style={{ color: '#d32d2f' }} >Container Name: </b><b>{item.ContainerName}</b>
                                             <br></br>
                                             <b style={{ color: '#d32d2f' }} >Date: </b><b>{new Date(item.DateOfNotification).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b>
                                             <br></br>
-                                            <b style={{ marginLeft: '40%' }}>Click to see Cluster</b>
+                                            <br></br>
+                                            <b style={{ color: 'red' }}>Double-Click to see Cluster / Long-Click to delete Notification</b>
                                         </Typography>
-                                        <Button style={{ fontSize: '25px', cursor: 'pointer', position: "absolute", top: '0', right: 0, backgroundColor: 'white', color: 'black' }} onClick={() => handleDelete(item._id)}>
+                                        {/* <Button style={{ fontSize: '25px', cursor: 'pointer', position: "absolute", top: '0', right: 0, backgroundColor: 'white', color: 'black' }} onClick={() => handleDelete(item._id)}>
                                             <DeleteIcon ></DeleteIcon>
-                                        </Button>
+                                        </Button> */}
 
 
 

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const { ObjectId } = mongoose.Schema.Types
 
-const alertNotificationSchema = new mongoose.Schema({
+const alertHistorySchema = new mongoose.Schema({
     ownedBy: {
         type: ObjectId,
         ref: "User"
@@ -49,4 +49,4 @@ const alertNotificationSchema = new mongoose.Schema({
     }
 })
 
-mongoose.model("AlertNotification", alertNotificationSchema)
+mongoose.model("AlertHistory", alertHistorySchema)

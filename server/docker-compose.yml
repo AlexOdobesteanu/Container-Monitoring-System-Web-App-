@@ -6,7 +6,7 @@ services:
       - 2376:443
     environment:
       - CREATE_CERTS_WITH_PW=alex
-      - CERT_HOSTNAME=remote-api.20-113-162-62.nip.io
+      - CERT_HOSTNAME=remote-api.20-113-135-55.nip.io
     volumes:
       - /data/certs
       - /var/run/docker.sock:/var/run/docker.sock:ro

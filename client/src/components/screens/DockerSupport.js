@@ -9,8 +9,8 @@ const fs = require('fs')
 
 const DockerSupport = () => {
     const [certsPass, setPass] = useState("")
-    const [certDays, setCertDays] = useState(null)
-    const [caDays, setCaDays] = useState(null)
+    const [certDays, setCertDays] = useState("")
+    const [caDays, setCaDays] = useState("")
     const [certHostname, setCertHostname] = useState("")
     const [nickname, setNickname] = useState("")
     const [showDownload, setShowDownload] = useState(false)
@@ -78,11 +78,10 @@ const DockerSupport = () => {
             M.toast({ html: "Empty fields", classes: "rounded red darken-3" })
             return
         }
-        if (!caDays || !certDays) {
-            setCaDays(900)
-            setCertDays(365)
-
-        }
+        // if (caDays == null || certDays == null) {
+        //     setCaDays("900")
+        //     setCertDays("365")
+        // }
         fetch("/dockersupp", {
             method: "post",
             headers:
@@ -144,6 +143,8 @@ const DockerSupport = () => {
             padding: "20px",
             textAlign: "center"
         }}>
+            <b id='white-text' style={{ fontStyle: 'italic', fontSize: '30px' }}>Configure your Docker Remote API Server</b>
+            <br></br>
             <div className="card input-field" style={{
                 margin: "10px auto",
                 maxWidth: "550px",

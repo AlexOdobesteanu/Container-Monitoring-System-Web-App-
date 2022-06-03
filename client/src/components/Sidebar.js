@@ -5,10 +5,12 @@ import Home from '../logos/home-solid.svg';
 import DockerLogo from '../logos/docker-logo.svg'
 import logo from '../logos/mylogo.png'
 import History from '../logos/history.png'
+import AlertHistoryLogo from '../logos/alertHistory.png';
 import styled from "styled-components";
 import '../nav.css'
 import { Tooltip } from '@mui/material';
 import { Typography } from '@mui/material';
+import alertdetails from '../logos/alertdetails.png'
 
 const Container = styled.div`
   position: fixed;
@@ -121,59 +123,69 @@ const Text = styled.span`
 
 const Sidebar = () => {
 
-    const [click, setClick] = useState(false)
-    const HandleClick = () => setClick(!click);
-    const { state, dispatch } = useContext(UserContext)
+  const [click, setClick] = useState(false)
+  const HandleClick = () => setClick(!click);
+  const { state, dispatch } = useContext(UserContext)
 
-    const renderList = () => {
-        if (state) {
-            return [
-                <>
-                    <Button2 clicked={click} onClick={() => HandleClick()}></Button2>
-                    <Container>
-                        <SidebarContainer>
+  const renderList = () => {
+    if (state) {
+      return [
+        <>
+          <Button2 clicked={click} onClick={() => HandleClick()}></Button2>
+          <Container>
+            <SidebarContainer>
 
-                            <Logo>
-                                <img src={logo} alt="logo"></img>
-                            </Logo>
-                            <SlickBar clicked={click}>
+              <Logo>
+                <img src={logo} alt="logo"></img>
+              </Logo>
+              <SlickBar clicked={click}>
 
 
-                                <Item onClick={() => setClick(false)} exact activeClassName="active" to="/">
-                                    <img src={Home} alt="logo"></img>
-                                    <Text clicked={click}>Home</Text>
-                                </Item>
+                <Item onClick={() => setClick(false)} exact activeClassName="active" to="/">
+                  <img src={Home} alt="logo"></img>
+                  <Text clicked={click}>Home</Text>
+                </Item>
 
-                                <Item onClick={() => setClick(false)} activeClassName="active" to="/dockersupport">
-                                    <img src={DockerLogo} alt="logo" style={{ fill: 'white', stroke: 'white' }}></img>
-                                    <Text clicked={click}>Configure Docker</Text>
-                                </Item>
-                                <Item onClick={() => setClick(false)} activeClassName="active" to="/allclusters">
-                                    <img src={History} alt="logo"></img>
-                                    <Text clicked={click}>View Docker Instances</Text>
-                                </Item >
-                                {/* <Item onClick={() => setClick(false)}>
+                <Item onClick={() => setClick(false)} activeClassName="active" to="/dockersupport">
+                  <img src={DockerLogo} alt="logo" style={{ fill: 'white', stroke: 'white' }}></img>
+                  <Text clicked={click}>Configure Docker</Text>
+                </Item>
+                <Item onClick={() => setClick(false)} activeClassName="active" to="/allclusters">
+                  <img src={History} alt="logo"></img>
+                  <Text clicked={click}>View Docker Instances</Text>
+                </Item >
+
+                <Item onClick={() => setClick(false)} activeClassName="active" to="/alerts">
+                  <img src={alertdetails} alt="logo"></img>
+                  <Text clicked={click}>View Alert Details</Text>
+                </Item >
+
+                <Item onClick={() => setClick(false)} activeClassName="active" to="/alertHistory">
+                  <img src={AlertHistoryLogo} alt="logo"></img>
+                  <Text clicked={click}>View Alert History</Text>
+                </Item >
+                {/* <Item onClick={() => setClick(false)}>
                                     <img src={logo} alt="logo"></img>
                                     <Text clicked={click}>Alternative</Text>
                                 </Item> */}
 
-                            </SlickBar>
-                        </SidebarContainer>
-                    </Container>
-                </>
-            ]
+              </SlickBar>
+            </SidebarContainer>
+          </Container>
+        </>
+      ]
 
-        }
-        else {
-            return <></>
-        }
     }
+    else {
+      return <></>
+    }
+  }
 
 
-    return (
-        <>{renderList()}</>
+  return (
+    <>{renderList()}</>
 
-    )
+  )
 }
 
 export default Sidebar

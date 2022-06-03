@@ -5,10 +5,10 @@ services:
     ports:
       - '2376:443'
     environment:
-      - CREATE_CERTS_WITH_PW=2
-      - CERT_EXPIRATION_DAYS=2
-      - CA_EXPIRATION_DAYS=2
-      - CERT_HOSTNAME=remote-api.127-0-0-1.nip.io
+      - CREATE_CERTS_WITH_PW=aaa
+      - CERT_EXPIRATION_DAYS=22
+      - CA_EXPIRATION_DAYS=22
+      - CERT_HOSTNAME=undefined
     volumes:
       - /data/certs
       - '/var/run/docker.sock:/var/run/docker.sock:ro'

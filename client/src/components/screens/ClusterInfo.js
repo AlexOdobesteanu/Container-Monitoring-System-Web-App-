@@ -13,7 +13,6 @@ import { drawPoint } from 'chart.js/helpers';
 import { CircleLoader, DotLoader, HashLoader, MoonLoader, RingLoader } from 'react-spinners';
 import { ReactSpinner } from 'react-spinning-wheel';
 
-
 function useInterval(callback, delay) {
     const savedCallback = useRef();
 
@@ -60,14 +59,19 @@ const ClusterInfo = () => {
     const [UserPerc, setUserPerc] = useState("")
     const [KernelPerc, setKernelPerc] = useState("")
 
+    const [Services, setServices] = useState([])
+    const [showServices, setShowServices] = useState(false)
+
 
 
 
     const [selectedRunning, setSelectedRunning] = useState(false);
     const [selectedExit, setSelectedExit] = useState(false);
+    const [selectedPause, setSelectedPause] = useState(false)
 
     const [runningCount, setRunningCount] = useState(0);
     const [exitedCount, setExitedCount] = useState(0);
+    const [pausedCount, setPausedCount] = useState(0)
     const [aux, setAux] = useState({})
 
     const [delay, setDelay] = useState(4000);
@@ -81,14 +85,47 @@ const ClusterInfo = () => {
 
     const seeRunning = () => {
         setSelectedExit(false)
+        setSelectedPause(false)
         setSelectedRunning(!selectedRunning)
         console.log(selectedRunning)
     }
 
     const seeExited = () => {
         setSelectedRunning(false)
+        setSelectedPause(false)
         setSelectedExit(!selectedExit)
     }
+
+    const seePaused = () => {
+        setSelectedExit(false)
+        setSelectedRunning(false)
+        setSelectedPause(!selectedPause)
+    }
+
+    const renderServices = () => {
+        fetch('/GetServices',
+            {
+                method: "post",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    {
+                        domainName: domainName,
+                        nickname: nickname
+                    }
+                )
+            }
+        ).then(res => res.json())
+            .then(result => {
+                console.log(result)
+                setServices(result.containers)
+                setShowServices(true)
+            })
+    }
+
+
 
     const startContainer = (id) => {
         fetch('/StartContainer',
@@ -109,7 +146,7 @@ const ClusterInfo = () => {
             }
         ).then(res => res.json())
             .then(result => {
-                // console.log(result)
+                console.log(result)
                 if (result.error) {
                     M.toast({ html: result.error, classes: 'rounded red darken-3' })
                 }
@@ -118,6 +155,62 @@ const ClusterInfo = () => {
                 }
             })
 
+    }
+
+    const unpauseContainer = (id) => {
+        fetch('/UnpauseContainer',
+            {
+                method: "post",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    {
+                        idContainer: id,
+                        domainName: domainName,
+                        nickname: nickname
+                    }
+                )
+            }
+        ).then(res => res.json())
+            .then(result => {
+                console.log(result)
+                if (result.error) {
+                    M.toast({ html: result.error, classes: 'rounded red darken-3' })
+                }
+                else {
+                    M.toast({ html: result.succes, classes: 'rounded green' })
+                }
+            })
+    }
+
+    const pauseContainer = (id) => {
+        fetch('/PauseContainer',
+            {
+                method: "post",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    {
+                        idContainer: id,
+                        domainName: domainName,
+                        nickname: nickname
+                    }
+                )
+            }
+        ).then(res => res.json())
+            .then(result => {
+                console.log(result)
+                if (result.error) {
+                    M.toast({ html: result.error, classes: 'rounded red darken-3' })
+                }
+                else {
+                    M.toast({ html: result.succes, classes: 'rounded green' })
+                }
+            })
     }
 
     const stopContainer = (id) => {
@@ -244,7 +337,8 @@ const ClusterInfo = () => {
         setCheckedNetwork(!checkedNetwork)
     }
 
-    const handleSetAlert = (id) => {
+    const handleSetAlert = (id, names) => {
+        console.log(names)
         fetch('/AlertConfigure',
             {
                 method: "post",
@@ -256,6 +350,7 @@ const ClusterInfo = () => {
                     {
                         idCluster: idCluster,
                         idContainer: id,
+                        ContainerName: names,
                         MemPercAlert: MemoryPerc,
                         MemUsedAlert: MemoryUsed,
                         CacheAlert: CacheUsed,
@@ -275,6 +370,7 @@ const ClusterInfo = () => {
             }
         ).then(res => res.json())
             .then(result => {
+                console.log(result)
                 // console.log('bbb')
                 // console.log(result)
                 // if (result.error) {
@@ -311,10 +407,17 @@ const ClusterInfo = () => {
                                                     <p id='white-text'>Status: <b id='green-text'> {item.Status}</b></p>
                                                     <p id='white-text'>ID: <b style={{ color: 'rgb(32,151,207)' }}> {item.Id}</b></p>
                                                     <p id='white-text'>Image: <b style={{ color: 'rgb(32,151,207)' }}>{item.Image}</b></p>
-                                                    <div style={{ marginTop: '20px' }}>
-                                                        <button className="btn waves-effect waves-light" id='red-button' onClick={() => stopContainer(item.Id)}>
-                                                            Stop Container
-                                                        </button>
+                                                    <div style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '30px', textAlign: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                                                        <div>
+                                                            <button className="btn waves-effect waves-light" id='red-button' onClick={() => stopContainer(item.Id)}>
+                                                                Stop Container
+                                                            </button>
+                                                        </div>
+                                                        <div>
+                                                            <button className="btn waves-effect waves-light" id='red-button' onClick={() => pauseContainer(item.Id)}>
+                                                                Pause Container
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -525,7 +628,7 @@ const ClusterInfo = () => {
                                                                     maxWidth: "530px",
                                                                     textAlign: "center"
                                                                 }}>
-                                                                    <button class="btn waves-effect waves-light green" onClick={() => handleSetAlert(item.Id)}>Save
+                                                                    <button class="btn waves-effect waves-light green" onClick={() => handleSetAlert(item.Id, item.Names[0].toString())}>Save
                                                                     </button>
                                                                 </div>) : (<div></div>)
                                                             }
@@ -542,6 +645,66 @@ const ClusterInfo = () => {
                                         </div>
 
                                     </>
+                                )
+                            }
+                            else {
+                                return (
+                                    <div></div>
+                                )
+                            }
+
+                        })
+                    }
+                </div >
+            )
+        }
+
+    }
+
+    const renderPaused = () => {
+        console.log('alex')
+        if (data.length != 0) {
+            return (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', textAlign: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                    {
+                        data.map(item => {
+
+                            if (item.State == 'paused') {
+                                return (
+                                    <div class="card horizontal" style={{ flex: '1 1 0px' }}>
+                                        <div class="card-image">
+                                        </div>
+                                        <div class="card-stacked">
+                                            <div class="card-content">
+                                                <p id='white-text'>
+                                                    Type:<b style={{ color: 'rgb(255, 205, 86)' }}> Container</b>
+                                                </p>
+                                                <p id='white-text'>Name: <b style={{ color: 'rgb(255, 205, 86)' }}> {item.Names}</b></p>
+                                                <p id='white-text'>State: <b style={{ color: 'rgb(255, 205, 86)' }}> {item.State}</b></p>
+                                                <p id='white-text'>Status: <b style={{ color: 'rgb(255, 205, 86)' }}> {item.Status}</b></p>
+                                                <p id='white-text'>ID: <b style={{ color: 'rgb(255, 205, 86)' }}> {item.Id}</b></p>
+                                                <p id='white-text'>Image: <b style={{ color: 'rgb(255, 205, 86)' }}>{item.Image}</b></p>
+                                                <div style={{ marginTop: '20px' }}>
+                                                    <button className="btn waves-effect waves-light" id='yellow-button' onClick={() => unpauseContainer(item.Id)}>
+                                                        Unpause Container
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-action">
+                                                <Link to="/containerdata" style={{ color: 'rgb(255, 205, 86)' }}
+                                                    state={{
+                                                        idContainer: item.Id,
+                                                        domainName: domainName,
+                                                        nickname: nickname
+                                                    }}>View
+                                                    details</Link>
+                                            </div>
+
+                                        </div>
+                                        {/* <h5>
+                                            <i className="medium material-icons white-text " style={{ fontSize: '30px', cursor: 'pointer' }}>add_alert</i>
+                                        </h5> */}
+                                    </div>
                                 )
                             }
                             else {
@@ -639,10 +802,17 @@ const ClusterInfo = () => {
                                                     <p id='white-text'>Status: <b id='green-text'> {item.Status}</b></p>
                                                     <p id='white-text'>ID: <b style={{ color: 'rgb(32,151,207)' }}> {item.Id}</b></p>
                                                     <p id='white-text'>Image: <b style={{ color: 'rgb(32,151,207)' }}>{item.Image}</b></p>
-                                                    <div style={{ marginTop: '20px' }}>
-                                                        <button className="btn waves-effect waves-light" id='red-button' onClick={() => stopContainer(item.Id)}>
-                                                            Stop Container
-                                                        </button>
+                                                    <div style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '30px', textAlign: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                                                        <div>
+                                                            <button className="btn waves-effect waves-light" id='red-button' onClick={() => stopContainer(item.Id)}>
+                                                                Stop Container
+                                                            </button>
+                                                        </div>
+                                                        <div>
+                                                            <button className="btn waves-effect waves-light" id='red-button' onClick={() => pauseContainer(item.Id)}>
+                                                                Pause Container
+                                                            </button>
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -850,7 +1020,7 @@ const ClusterInfo = () => {
                                                                     maxWidth: "530px",
                                                                     textAlign: "center"
                                                                 }}>
-                                                                    <button class="btn waves-effect waves-light green" onClick={() => handleSetAlert(item.Id)}>Save
+                                                                    <button class="btn waves-effect waves-light green" onClick={() => handleSetAlert(item.Id, item.Names[0].toString())}>Save
                                                                     </button>
                                                                 </div>) : (<div></div>)
                                                             }
@@ -866,45 +1036,89 @@ const ClusterInfo = () => {
                                     )
                                 }
                                 else {
-                                    return (
+                                    if (item.State == "paused") {
+                                        return (
 
-
-                                        <div class="card horizontal" style={{ flex: '1 1 0px' }} >
-                                            <div class="card-image">
-                                            </div>
-                                            <div class="card-stacked">
-                                                <div class="card-content">
-                                                    <p id='white-text'>
-                                                        Type:<b style={{ color: 'rgb(255, 99, 132)' }}> Container</b>
-                                                    </p>
-                                                    <p id='white-text'>Name: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.Names}</b></p>
-                                                    <p id='white-text'>State: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.State}</b></p>
-                                                    <p id='white-text'>Status: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.Status}</b></p>
-                                                    <p id='white-text'>ID: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.Id}</b></p>
-                                                    <p id='white-text'>Image: <b style={{ color: 'rgb(255, 99, 132)' }}>{item.Image}</b></p>
-                                                    <div style={{ marginTop: '20px' }}>
-                                                        <button className="btn waves-effect waves-light" id="green-button" onClick={() => startContainer(item.Id)}>
-                                                            Start Container
-                                                        </button>
+                                            <div class="card horizontal" style={{ flex: '1 1 0px' }}>
+                                                <div class="card-image">
+                                                </div>
+                                                <div class="card-stacked">
+                                                    <div class="card-content">
+                                                        <p id='white-text'>
+                                                            Type:<b style={{ color: 'rgb(255, 205, 86)' }}> Container</b>
+                                                        </p>
+                                                        <p id='white-text'>Name: <b style={{ color: 'rgb(255, 205, 86)' }}> {item.Names}</b></p>
+                                                        <p id='white-text'>State: <b style={{ color: 'rgb(255, 205, 86)' }}> {item.State}</b></p>
+                                                        <p id='white-text'>Status: <b style={{ color: 'rgb(255, 205, 86)' }}> {item.Status}</b></p>
+                                                        <p id='white-text'>ID: <b style={{ color: 'rgb(255, 205, 86)' }}> {item.Id}</b></p>
+                                                        <p id='white-text'>Image: <b style={{ color: 'rgb(255, 205, 86)' }}>{item.Image}</b></p>
+                                                        <div style={{ marginTop: '20px' }}>
+                                                            <button className="btn waves-effect waves-light" id='yellow-button' onClick={() => unpauseContainer(item.Id)}>
+                                                                Unpause Container
+                                                            </button>
+                                                        </div>
                                                     </div>
+                                                    <div class="card-action">
+                                                        <Link to="/containerdata" style={{ color: 'rgb(255, 205, 86)' }}
+                                                            state={{
+                                                                idContainer: item.Id,
+                                                                domainName: domainName,
+                                                                nickname: nickname
+                                                            }}>View
+                                                            details</Link>
+                                                    </div>
+
                                                 </div>
-                                                <div class="card-action">
-                                                    <Link to="/containerdata" style={{ color: 'rgb(255, 99, 132)' }}
-                                                        state={{
-                                                            idContainer: item.Id,
-                                                            domainName: domainName,
-                                                            nickname: nickname
-                                                        }}>View
-                                                        details</Link>
-                                                </div>
-                                            </div>
-                                            {/* <h5>
+                                                {/* <h5>
                                             <i className="medium material-icons white-text " style={{ fontSize: '30px', cursor: 'pointer' }}>add_alert</i>
                                         </h5> */}
-                                        </div>
+                                            </div>
+                                        )
+
+                                    }
+                                    else {
+                                        return (
 
 
-                                    )
+                                            <div class="card horizontal" style={{ flex: '1 1 0px' }} >
+                                                <div class="card-image">
+                                                </div>
+                                                <div class="card-stacked">
+                                                    <div class="card-content">
+                                                        <p id='white-text'>
+                                                            Type:<b style={{ color: 'rgb(255, 99, 132)' }}> Container</b>
+                                                        </p>
+                                                        <p id='white-text'>Name: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.Names}</b></p>
+                                                        <p id='white-text'>State: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.State}</b></p>
+                                                        <p id='white-text'>Status: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.Status}</b></p>
+                                                        <p id='white-text'>ID: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.Id}</b></p>
+                                                        <p id='white-text'>Image: <b style={{ color: 'rgb(255, 99, 132)' }}>{item.Image}</b></p>
+                                                        <div style={{ marginTop: '20px' }}>
+                                                            <button className="btn waves-effect waves-light" id="green-button" onClick={() => startContainer(item.Id)}>
+                                                                Start Container
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <Link to="/containerdata" style={{ color: 'rgb(255, 99, 132)' }}
+                                                            state={{
+                                                                idContainer: item.Id,
+                                                                domainName: domainName,
+                                                                nickname: nickname
+                                                            }}>View
+                                                            details</Link>
+                                                    </div>
+                                                </div>
+                                                {/* <h5>
+                                                <i className="medium material-icons white-text " style={{ fontSize: '30px', cursor: 'pointer' }}>add_alert</i>
+                                            </h5> */}
+                                            </div>
+
+
+                                        )
+
+                                    }
+
                                 }
 
                             })
@@ -918,6 +1132,27 @@ const ClusterInfo = () => {
 
 
     useInterval(() => {
+
+        fetch('/GetServices',
+            {
+                method: "post",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    {
+                        domainName: domainName,
+                        nickname: nickname
+                    }
+                )
+            }
+        ).then(res => res.json())
+            .then(result => {
+                console.log(result)
+                setServices(result.containers)
+            })
+
         fetch("/containersinfo", {
             method: "post",
             headers:
@@ -936,47 +1171,56 @@ const ClusterInfo = () => {
 
                 let counter_running = 0
                 let counter_exited = 0
+                let counter_paused = 0
                 // setAux({})
                 // var dict = {}
-                for (let i = 0; i < result.containers.length; i++) {
-                    // fetch("/GetAlertsForContainer", {
-                    //     method: "post",
-                    //     headers:
-                    //     {
-                    //         "Authorization": "Bearer " + localStorage.getItem("jwt"),
-                    //         "Content-Type": "application/json"
-                    //     },
-                    //     body: JSON.stringify(
-                    //         {
-                    //             idCluster: idCluster,
-                    //             idContainer: result.containers[i].Id
-                    //         }
-                    //     )
+                if (result.containers != null) {
+                    for (let i = 0; i < result.containers.length; i++) {
+                        // fetch("/GetAlertsForContainer", {
+                        //     method: "post",
+                        //     headers:
+                        //     {
+                        //         "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                        //         "Content-Type": "application/json"
+                        //     },
+                        //     body: JSON.stringify(
+                        //         {
+                        //             idCluster: idCluster,
+                        //             idContainer: result.containers[i].Id
+                        //         }
+                        //     )
 
-                    // })
-                    //     .then(res2 => res2.json())
-                    //     .then(result2 => {
-                    //         dict[result.containers[i].Id.toString()] = result2.containerNotifications.length
-                    //         // console.log(dict)
-
-
-
-
-
-                    //     })
-                    // setAux(dict)
+                        // })
+                        //     .then(res2 => res2.json())
+                        //     .then(result2 => {
+                        //         dict[result.containers[i].Id.toString()] = result2.containerNotifications.length
+                        //         // console.log(dict)
 
 
 
-                    if (result.containers[i].State == 'running') {
-                        counter_running++
+
+
+                        //     })
+                        // setAux(dict)
+
+
+
+                        if (result.containers[i].State == 'running') {
+                            counter_running++
+                        }
+                        if (result.containers[i].State == 'exited') {
+                            counter_exited++
+                        }
+                        if (result.containers[i].State == 'paused') {
+                            counter_paused++
+                        }
                     }
-                    if (result.containers[i].State == 'exited') {
-                        counter_exited++
-                    }
+
                 }
+
                 setRunningCount(counter_running)
                 setExitedCount(counter_exited)
+                setPausedCount(counter_paused)
                 // console.log(runningCount)
                 // console.log(exitedCount)
 
@@ -1002,110 +1246,256 @@ const ClusterInfo = () => {
             })
         }).then(res => res.json())
             .then(result => {
+                console.log(result.containers)
                 setData(result.containers)
                 let counter_running = 0
                 let counter_exited = 0
-                for (let i = 0; i < result.containers.length; i++) {
-                    if (result.containers[i].State == 'running') {
-                        counter_running++
+                let counter_paused = 0
+                if (result.containers != null) {
+                    for (let i = 0; i < result.containers.length; i++) {
+                        if (result.containers[i].State == 'running') {
+                            counter_running++
+                        }
+                        if (result.containers[i].State == 'exited') {
+                            counter_exited++
+                        }
+                        if (result.containers[i].State == 'paused') {
+                            counter_paused++
+                        }
                     }
-                    if (result.containers[i].State == 'exited') {
-                        counter_exited++
-                    }
+                    setRunningCount(counter_running)
+                    setExitedCount(counter_exited)
+                    setPausedCount(counter_paused)
+                    // console.log(runningCount)
+                    // console.log(exitedCount)
+                    setLoading(true)
+                    setIsRunning(true)
                 }
-                setRunningCount(counter_running)
-                setExitedCount(counter_exited)
-                // console.log(runningCount)
-                // console.log(exitedCount)
-                setLoading(true)
+                else {
+                    setIsRunning(false)
+                }
+
             })
     }, [])
 
     return (
         <>
             {
-                loading ? (<div style={{
-                    background: "rgb(40,44,52)",
-                    minHeight: '100vh',
-                    overflow: 'auto'
-                }}>
-                    <div class="col s12 m7" style={{
-                        margin: "10px auto",
-                        maxWidth: "900px",
-                        textAlign: "center"
-                    }}>
-                        <b id='white-text' style={{ fontSize: '20px' }}>Cluster nickname: <b id='blue-text' style={{ fontSize: '20px' }}>{nickname}</b></b>
+                data == null ?
+                    <div style={{ textAlign: 'center' }}><b id='white-text' style={{ fontSize: '50px' }}>Docker Remote API Connection ERROR !</b>
                         <br></br>
-                        <b id='white-text' style={{ fontSize: '20px' }}>Id: <b id='blue-text' style={{ fontSize: '20px' }}>{idCluster}</b></b>
-
+                        <b id='white-text' style={{ fontSize: '50px' }}>Start your Docker Remote API Server and refresh the page.</b>
                     </div>
-
-
-                    <div class="col s12 m7" style={{
-                        margin: "50px auto",
-                        maxWidth: "900px",
-                        textAlign: "center",
-
-                    }}>
-
-                        <div style={{ display: 'flex', width: '50%', margin: '0 auto', gap: '30px' }}>
-                            {
-                                selectedRunning ? (
-                                    <>
-                                        <div class="circle-selected" onClick={() => seeRunning()}>
-                                            <div style={{ marginTop: '40px' }}><b style={{ color: 'white', margin: 'auto', fontSize: 'xx-large' }}>{runningCount}</b></div>
-                                            <div><b style={{ color: 'white', margin: 'auto', fontSize: 'xx-large' }}>running</b></div>
-                                        </div>
-                                        <div class="circle-red" onClick={() => seeExited()}>
-                                            <div style={{ marginTop: '40px' }}><b class="text-red">{exitedCount}</b></div>
-                                            <div><b class="text-red">exited</b></div>
-                                        </div>
-                                    </>)
-                                    : (
-                                        <>
-                                            {
-                                                selectedExit ? (<><div class="circle" onClick={() => seeRunning()}>
-                                                    <div style={{ marginTop: '40px' }}><b class="text">{runningCount}</b></div>
-                                                    <div><b class="text">running</b></div>
-                                                </div>
-                                                    <div class="circle-red-selected" onClick={() => seeExited()}>
-                                                        <div style={{ marginTop: '40px' }}><b style={{ color: 'white', margin: 'auto', fontSize: 'xx-large' }}>{exitedCount}</b></div>
-                                                        <div><b style={{ color: 'white', margin: 'auto', fontSize: 'xx-large' }}>exited</b></div>
-                                                    </div></>)
-
-                                                    : (<><div class="circle" onClick={() => seeRunning()}>
-                                                        <div style={{ marginTop: '40px' }}><b class="text">{runningCount}</b></div>
-                                                        <div><b class="text">running</b></div>
-                                                    </div>
-                                                        <div class="circle-red" onClick={() => seeExited()}>
-                                                            <div style={{ marginTop: '40px' }}><b class="text-red">{exitedCount}</b></div>
-                                                            <div><b class="text-red">exited</b></div>
-                                                        </div></>)
-                                            }
-
-
-                                        </>)
-
-                            }
-
-                        </div>
-                        <br></br>
-
-
-
-
-
-                    </div>
-                    <div style={{ marginLeft: '190px', marginRight: '190px' }}>
-
+                    : <div>
                         {
-                            selectedRunning ? (<div>{renderRunning()}</div>) : (<div>{selectedExit ? (<div>{renderExited()}</div>) : (<div >{renderAll()}</div>)}</div>)
+                            loading ? (<div style={{
+                                background: "rgb(40,44,52)",
+                                minHeight: '100vh',
+                                overflow: 'auto'
+                            }}>
+                                <div class="col s12 m7" style={{
+                                    margin: "10px auto",
+                                    maxWidth: "900px",
+                                    textAlign: "center"
+                                }}>
+                                    <b id='white-text' style={{ fontSize: '20px' }}>Cluster nickname: <b id='blue-text' style={{ fontSize: '20px' }}>{nickname}</b></b>
+                                    <br></br>
+                                    <b id='white-text' style={{ fontSize: '20px' }}>Id: <b id='blue-text' style={{ fontSize: '20px' }}>{idCluster}</b></b>
+
+                                </div>
+
+
+                                <div class="col s12 m7" style={{
+                                    margin: "50px auto",
+                                    maxWidth: "900px",
+                                    textAlign: "center",
+
+                                }}>
+
+                                    <div style={{ display: 'flex', width: '70%', margin: '0 auto', gap: '10px' }}>
+                                        {
+                                            selectedRunning ? (
+                                                <>
+                                                    <div class="circle-selected" onClick={() => seeRunning()}>
+                                                        <div style={{ marginTop: '40px' }}><b style={{ color: 'white', margin: 'auto', fontSize: 'xx-large' }}>{runningCount}</b></div>
+                                                        <div><b style={{ color: 'white', margin: 'auto', fontSize: 'xx-large' }}>running</b></div>
+                                                    </div>
+                                                    <div class="circle-red" onClick={() => seeExited()}>
+                                                        <div style={{ marginTop: '40px' }}><b class="text-red">{exitedCount}</b></div>
+                                                        <div><b class="text-red">exited</b></div>
+                                                    </div>
+                                                    <div class="circle-yellow" onClick={() => seePaused()}>
+                                                        <div style={{ marginTop: '40px' }}><b class="text-yellow">{pausedCount}</b></div>
+                                                        <div><b class="text-yellow">paused</b></div>
+                                                    </div>
+                                                </>)
+                                                : (
+                                                    <>
+                                                        {
+                                                            selectedExit ? (
+                                                                <>
+                                                                    <div class="circle" onClick={() => seeRunning()}>
+                                                                        <div style={{ marginTop: '40px' }}><b class="text">{runningCount}</b></div>
+                                                                        <div><b class="text">running</b></div>
+                                                                    </div>
+                                                                    <div class="circle-red-selected" onClick={() => seeExited()}>
+                                                                        <div style={{ marginTop: '40px' }}><b style={{ color: 'white', margin: 'auto', fontSize: 'xx-large' }}>{exitedCount}</b></div>
+                                                                        <div><b style={{ color: 'white', margin: 'auto', fontSize: 'xx-large' }}>exited</b></div>
+                                                                    </div>
+                                                                    <div class="circle-yellow" onClick={() => seePaused()}>
+                                                                        <div style={{ marginTop: '40px' }}><b class="text-yellow">{pausedCount}</b></div>
+                                                                        <div><b class="text-yellow">paused</b></div>
+                                                                    </div>
+                                                                </>)
+
+                                                                : (
+                                                                    <>
+                                                                        {
+                                                                            selectedPause ?
+                                                                                <>
+                                                                                    <div class="circle" onClick={() => seeRunning()}>
+                                                                                        <div style={{ marginTop: '40px' }}><b class="text">{runningCount}</b></div>
+                                                                                        <div><b class="text">running</b></div>
+                                                                                    </div>
+                                                                                    <div class="circle-red" onClick={() => seeExited()}>
+                                                                                        <div style={{ marginTop: '40px' }}><b class="text-red">{exitedCount}</b></div>
+                                                                                        <div><b class="text-red">exited</b></div>
+                                                                                    </div>
+                                                                                    <div class="circle-yellow-selected" onClick={() => seePaused()}>
+                                                                                        <div style={{ marginTop: '40px' }} ><b style={{ color: 'white', margin: 'auto', fontSize: 'xx-large' }}>{pausedCount}</b ></div>
+                                                                                        <div><b style={{ color: 'white', margin: 'auto', fontSize: 'xx-large' }}>paused</b></div>
+                                                                                    </div>
+                                                                                </> :
+                                                                                <>
+                                                                                    <div class="circle" onClick={() => seeRunning()}>
+                                                                                        <div style={{ marginTop: '40px' }}><b class="text">{runningCount}</b></div>
+                                                                                        <div><b class="text">running</b></div>
+                                                                                    </div>
+                                                                                    <div class="circle-red" onClick={() => seeExited()}>
+                                                                                        <div style={{ marginTop: '40px' }}><b class="text-red">{exitedCount}</b></div>
+                                                                                        <div><b class="text-red">exited</b></div>
+                                                                                    </div>
+                                                                                    <div class="circle-yellow" onClick={() => seePaused()}>
+                                                                                        <div style={{ marginTop: '40px' }}><b class="text-yellow">{pausedCount}</b></div>
+                                                                                        <div><b class="text-yellow">paused</b></div>
+                                                                                    </div>
+                                                                                </>
+                                                                        }
+                                                                    </>
+
+
+
+                                                                )
+                                                        }
+
+
+                                                    </>)
+
+                                        }
+
+                                    </div>
+                                    <br></br>
+
+
+
+
+
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '30px', marginBottom: '30px' }}>
+                                    <Link to="/generaldata" state={{
+                                        idCluster: idCluster,
+                                        domainName: domainName,
+                                        nickname: nickname
+                                    }}>
+
+                                        <Button id='blue-button'>View General Data</Button>
+
+                                    </Link>
+                                </div>
+                                <div style={{ marginLeft: '190px', marginRight: '190px' }}>
+
+
+                                    {
+                                        showServices ? <>
+
+                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '30px', marginBottom: '30px' }}>
+                                                <Button id='blue-button' onClick={() => { setShowServices(false) }}>View Less</Button>
+                                            </div>
+                                            <>
+                                                {
+                                                    Services.length == 0 ? <b id='white-text' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '20px', marginBottom: '30px' }}> no Services</b> : <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', textAlign: 'center', alignItems: 'center', justifyContent: 'center', marginBottom: '30px' }}>
+                                                        {
+                                                            Services.map(item => {
+                                                                return (
+                                                                    <>
+                                                                        <div class="card horizontal" style={{ flex: '1 1 0px' }}>
+                                                                            <div class="card-image">
+                                                                            </div>
+                                                                            <div class="card-stacked">
+                                                                                <div class="card-content">
+                                                                                    <p id='white-text'>
+                                                                                        Type:<b style={{ color: 'rgb(32,151,207)' }}> Service</b>
+                                                                                    </p>
+                                                                                    <p id='white-text'>Created At: <b style={{ color: 'rgb(32,151,207)' }}>{new Date(item.CreatedAt).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
+                                                                                    <p id='white-text'>Updated At: <b style={{ color: 'rgb(32,151,207)' }}>{new Date(item.UpdatedAt).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
+                                                                                    <p id='white-text'>Name: <b id='green-text'> {item.Spec["Name"]}</b></p>
+                                                                                    <p id='white-text'>Replicas: <b id='green-text'> {item.Spec["Mode"]["Replicated"]["Replicas"]}</b></p>
+                                                                                    {/* <p id='white-text'>ID: <b style={{ color: 'rgb(32,151,207)' }}> {item.Id}</b></p> */}
+                                                                                    <p id='white-text'>Image: <b style={{ color: 'rgb(32,151,207)' }}>{item.Spec["TaskTemplate"]["ContainerSpec"]["Image"].split("@")[0]}</b></p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </>
+
+                                                                )
+                                                            })
+                                                        }
+                                                    </div>
+                                                }
+                                            </>
+
+                                        </> : <><div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '30px', marginBottom: '30px' }}>
+                                            <Button id='blue-button' onClick={() => renderServices()}>View Services</Button>
+                                        </div></>
+                                    }
+
+                                    {
+                                        selectedRunning ?
+                                            (
+                                                <div>
+                                                    {renderRunning()}
+                                                </div>
+                                            ) :
+                                            (<div>
+                                                {selectedExit ?
+                                                    (
+                                                        <div>
+                                                            {renderExited()}
+                                                        </div>
+                                                    ) :
+                                                    (
+                                                        <div>
+                                                            {
+                                                                selectedPause ? <div>{renderPaused()}</div> :
+                                                                    <div>
+                                                                        {renderAll()}
+                                                                    </div>
+                                                            }
+                                                        </div>
+                                                    )
+                                                }
+                                            </div>)
+                                    }
+
+                                </div>
+                            </div >) : (<div style={style}><HashLoader color='white' speedMultiplier={2}></HashLoader></div>)
+
                         }
                     </div>
-                </div >) : (<div style={style}><HashLoader color='white' speedMultiplier={2}></HashLoader></div>)
-
             }
         </>
+
+
 
     )
 

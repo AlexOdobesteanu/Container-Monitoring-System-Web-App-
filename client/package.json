@@ -38,6 +38,7 @@
     "react-spinners": "^0.11.0",
     "react-spinning-wheel": "^2.1.0",
     "styled-components": "^5.3.5",
+    "use-long-press": "^2.0.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

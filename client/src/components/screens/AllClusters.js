@@ -17,7 +17,51 @@ const AllClusters = () => {
     const [loading, setLoading] = useState(false);
     const [containersData, setcontainersData] = useState([])
     const [data, setData] = useState([])
+    const [multipleFiles, setMultipleFiles] = useState([])
+    const [ShowEdit, SetShowEdit] = useState(false)
+    const [certHostname, setCertHostname] = useState("")
 
+    const multipleFileChange = (e) => {
+        setMultipleFiles(e.target.files)
+    }
+
+    const handleEdit = () => {
+        SetShowEdit(true)
+
+    }
+
+    const handleLess = () => {
+        SetShowEdit(false)
+    }
+
+    const uploadMultipleFiles = (e, nickname) => {
+        e.preventDefault()
+        const data = new FormData()
+        for (let i = 0; i < multipleFiles.length; i++) {
+            data.append('files', multipleFiles[i])
+        }
+
+        const headers = {
+            "Authorization": "Bearer " + localStorage.getItem("jwt")
+        }
+
+        const params = {
+            nickname: nickname
+        }
+
+        axios.post("/multiple", data,
+            {
+                headers: headers,
+                params: params
+            })
+            .then(result => {
+                console.log(result)
+                if (result.data['succes']) {
+                    M.toast({ html: 'Uploaded successfully', classes: 'rounded green' })
+                }
+            })
+            .catch(err => M.toast({ html: 'Incorrect files chosen', classes: 'rounded red darken-3' }))
+    }
 
 
     function download(nick) {
@@ -114,6 +158,20 @@ const AllClusters = () => {
                                     }}>
                                         <button class="btn waves-effect waves-light green" id='blue-button'>View Full Details</button>
                                     </Link>
+                                    <br></br>
+                                    <br></br>
+                                    <Link to="/EditInstance" state={{
+                                        idCluster: item._id,
+                                        domainName: item.domainName,
+                                        nickname: item.nickname
+                                    }}>
+                                        <button class="btn waves-effect waves-light" id='blue-button' >
+                                            Edit
+                                        </button>
+
+                                    </Link>
+
+
                                 </CollapsibleItem>
 
                             )

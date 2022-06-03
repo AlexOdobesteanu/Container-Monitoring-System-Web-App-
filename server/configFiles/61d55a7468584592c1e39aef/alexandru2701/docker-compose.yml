@@ -5,9 +5,9 @@ services:
     ports:
       - '2376:443'
     environment:
-      - CREATE_CERTS_WITH_PW=2
-      - CERT_EXPIRATION_DAYS=2
-      - CA_EXPIRATION_DAYS=2
+      - CREATE_CERTS_WITH_PW=alex
+      - CERT_EXPIRATION_DAYS=365
+      - CA_EXPIRATION_DAYS=900
       - CERT_HOSTNAME=remote-api.127-0-0-1.nip.io
     volumes:
       - /data/certs

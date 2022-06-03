@@ -21,7 +21,7 @@ import Cloud from '@mui/icons-material/Cloud';
 import NotificationMenu from './NotificationMenu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-
+import ConfirmDialog from './screens/ConfirmDialog'
 import "../App.css"
 
 
@@ -52,6 +52,8 @@ const NavBar = () => {
     const [delay, setDelay] = useState(2000);
     const [myNotifications, setMyNotifications] = useState(null)
 
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subtitle: '' })
+
     const newNotifications = `You have ${badgeContent} notifications !`
     const noNotifications = "No new notifications "
 
@@ -72,6 +74,16 @@ const NavBar = () => {
 
     const handleClose = () => {
         setOpen(false)
+    }
+
+    const logout = () => {
+        setConfirmDialog({
+            ...confirmDialog,
+            isOpen: false
+        })
+        localStorage.clear()
+        dispatch({ type: "CLEAR" })
+        navigate('/signin')
     }
 
     useInterval(() => {
@@ -147,9 +159,13 @@ const NavBar = () => {
                     <>
                         <Tooltip title={<Typography fontSize={15}>Log Out</Typography>} >
                             <i className="material-icons white-text " style={{ fontSize: '35px', cursor: 'pointer' }} onClick={() => {
-                                localStorage.clear()
-                                dispatch({ type: "CLEAR" })
-                                navigate('/signin')
+                                // handleDelete(item._id)
+                                setConfirmDialog({
+                                    isOpen: true,
+                                    title: 'Are you sure you want to log out ?',
+                                    subtitle: "You'll be redirected to the Login Page.",
+                                    onConfirm: () => { logout() }
+                                })
                             }} >exit_to_app
                             </i>
                         </Tooltip>
@@ -181,6 +197,8 @@ const NavBar = () => {
                 <NotificationMenu open={open} anchorEl={anchorEl} handleClose={handleClose} menuItems={myNotifications}>
 
                 </NotificationMenu>
+
+                <ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog}></ConfirmDialog>
 
             </div>
         </nav>

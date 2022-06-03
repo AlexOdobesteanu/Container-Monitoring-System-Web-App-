@@ -9,6 +9,45 @@ Link {
   font-family: 'Abril Fatface', cursive;
 } */
 
+
+body::-webkit-scrollbar {
+  width: 15px;
+  /* width of the entire scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+  background: rgb(40, 44, 52);
+  /* color of the tracking area */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgb(62, 68, 82);
+  /* color of the scroll thumb */
+  border-radius: 20px;
+  /* roundness of the scroll thumb */
+  border: 3px solid whitesmoke;
+  /* creates padding around scroll thumb */
+}
+
+div::-webkit-scrollbar {
+  width: 15px;
+  /* width of the entire scrollbar */
+}
+
+div::-webkit-scrollbar-track {
+  background: rgb(40, 44, 52);
+  /* color of the tracking area */
+}
+
+div::-webkit-scrollbar-thumb {
+  background-color: rgb(62, 68, 82);
+  /* color of the scroll thumb */
+  border-radius: 20px;
+  /* roundness of the scroll thumb */
+  border: 3px solid whitesmoke;
+  /* creates padding around scroll thumb */
+}
+
 .mycard {
 
   margin-top: 20px;
@@ -144,6 +183,25 @@ Link {
   border-radius: 50%;
 }
 
+.circle-yellow {
+  cursor: pointer;
+  width: 200px;
+  height: 200px;
+  background-color: rgb(255, 205, 86, 0.3);
+  border: 3px solid rgb(255, 205, 86);
+  border-radius: 50%;
+}
+
+.circle-yellow-selected {
+  cursor: pointer;
+  width: 200px;
+  height: 200px;
+  background-color: rgb(255, 205, 86, 0.3);
+  border: 3px solid white;
+  border-radius: 50%;
+}
+
+
 .text {
   margin: auto;
   color: rgb(76, 175, 80);
@@ -153,6 +211,12 @@ Link {
 .text-red {
   margin: auto;
   color: rgb(255, 99, 132);
+  font-size: xx-large;
+}
+
+.text-yellow {
+  margin: auto;
+  color: rgb(255, 205, 86);
   font-size: xx-large;
 }
 
@@ -252,6 +316,14 @@ Link {
   border: 3px solid rgb(76, 175, 80) !important;
   color: rgb(76, 175, 80);
   background-color: rgb(76, 175, 80, 0.2);
+  font-size: large;
+  font-weight: bold;
+}
+
+#yellow-button {
+  border: 3px solid rgb(255, 205, 86) !important;
+  color: rgb(255, 205, 86);
+  background-color: rgb(255, 205, 86, 0.3);
   font-size: large;
   font-weight: bold;
 }
