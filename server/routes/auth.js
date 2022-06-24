@@ -81,4 +81,49 @@ router.post('/signin', (req, res) => {
 
 })
 
+
+router.post("/changepass", requireLogin, (req, res) => {
+    const { email, password, passwordNew } = req.body
+    if (!password || !passwordNew) {
+        return res.status(422).json({ error: "Please add all the fields" })
+    }
+
+    User.findOne({ email: email })
+        .then(savedUser => {
+            bcrypt.compare(password, savedUser.password)
+                .then(doMatch => {
+                    if (doMatch) {
+                        bcrypt.hash(passwordNew, 12)
+                            .then(hashedpassword => {
+                                User.findOneAndUpdate({ _id: savedUser._id },
+                                    {
+                                        $set: {
+                                            password: hashedpassword
+                                        }
+                                    }
+                                )
+                                    .then(myuser => {
+                                        res.json({ message: "Changed password successfully" })
+
+                                    })
+                                    .catch(err => {
+                                        return res.status(422).json({ error: "Error" })
+                                    })
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            })
+                        // res.json({ message: "successfully signed in" })
+                    }
+                    else {
+                        return res.status(422).json({ error: "Invalid password" })
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        })
+
+
+})
 module.exports = router

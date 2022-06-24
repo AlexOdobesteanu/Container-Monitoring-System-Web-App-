@@ -5,7 +5,7 @@ const User = mongoose.model("User")
 
 module.exports = (req, res, next) => {
     const { authorization } = req.headers
-    //authorization === Bearer ajodhqghfba
+    //authorization === Bearer ajodhqghfba - this is the form for the token
     if (!authorization) {
         res.status(401).json({ error: "you must be logged in" })
     }
@@ -22,3 +22,5 @@ module.exports = (req, res, next) => {
 
     })
 }
+
+

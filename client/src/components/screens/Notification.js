@@ -58,7 +58,7 @@ const Notification = () => {
         }).then(res => res.json())
             .then(result => {
                 console.log(result.mycluster[0])
-                navigate('/clusterinfo', {
+                navigate('/nodes', {
                     state: {
                         idCluster: idCluster,
                         domainName: result.mycluster[0].domainName,
@@ -108,6 +108,7 @@ const Notification = () => {
             }
         }).then(res => res.json())
             .then(result => {
+                console.log(result.myalertnotifications)
 
                 setData(result.myalertnotifications)
                 setLoading(true)
@@ -161,6 +162,11 @@ const Notification = () => {
                                                 <b className='white-text' >Cluster ID: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.idCluster}</b></b>
                                                 <br></br>
                                                 <b className='white-text' >Cluster Name: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.ClusterName}</b></b>
+                                                <br></br>
+                                                <br></br>
+                                                <b className='white-text' >Node ID: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.NodeId}</b></b>
+                                                <br></br>
+                                                <b className='white-text' >Node Name: <b style={{ color: 'rgb(255, 99, 132)' }}> {item.NodeName}</b></b>
                                                 <br></br>
                                                 <br></br>
 

@@ -1,19 +1,29 @@
 var fs = require('fs')
 var Docker = require('dockerode')
 const { Stream } = require('stream')
+const { Node } = require('dockerode')
 
 var mydocker = new Docker({
     host: 'https://remote-api.127-0-0-1.nip.io',
     port: 2376,
-    ca: fs.readFileSync('./configFiles/61d55a7468584592c1e39aef/alex/ca.pem'),
-    cert: fs.readFileSync('./configFiles/61d55a7468584592c1e39aef/alex/cert.pem'),
-    key: fs.readFileSync('./configFiles/61d55a7468584592c1e39aef/alex/key.pem')
+    ca: fs.readFileSync('./ca.pem'),
+    cert: fs.readFileSync('./cert.pem'),
+    key: fs.readFileSync('./key.pem')
 })
+
+
 
 
 // console.log("a")
 
-var container = mydocker.getContainer("841f44da5c74")
+// var node = mydocker.getNode("i7rp0ckav1ea8xbro2eujsja9")
+
+// node.listContainers(function (err, containers) {
+//     console.log(err)
+//     console.log(containers)
+// })
+
+// var container = mydocker.getContainer("841f44da5c74")
 
 // let params = {
 //     Cmd: ['kubectl', 'get', 'nodes'],
@@ -52,6 +62,20 @@ var container = mydocker.getContainer("841f44da5c74")
 //     console.log(data)
 // })
 
+// let image = mydocker.getImage("sha256:604d80444252dd46a4b4d35bb0226fc16e1022efcd18bf5980650f72d1cf29e5")
+// image.history(function (err, data) {
+//     console.log(data)
+// })
+
+// let net = mydocker.getNetwork("948a70fbf8a2d58b9e0a81b2fbf040eb9e5d697323f8138635a33ef565bb513e")
+
+// mydocker.listNetworks(function (err, data) {
+//     console.log(data)
+// })
+
+// net.inspect(function (err, data) {
+//     console.log(data)
+// })
 
 // mydocker.listNodes(function (err, data) {
 //     console.log(data)
@@ -71,13 +95,13 @@ var container = mydocker.getContainer("841f44da5c74")
 // node.inspect(function (err, data) {
 //     console.log(data)
 // })
-var container = mydocker.getContainer('4852cbe14deb')
+// var container = mydocker.getContainer('4852cbe14deb')
 
 
 
-container.top({ ps_args: "-e" }, function (err, data) {
-    console.log(data);
-});
+// container.top({ ps_args: "-e" }, function (err, data) {
+//     console.log(data);
+// });
 
 // mydocker.listServices(function (err, data) {
 //     // if (err) {
@@ -86,12 +110,13 @@ container.top({ ps_args: "-e" }, function (err, data) {
 //     console.log(data)
 // })
 
-// let service = mydocker.getService("0rwhdpopcou2")
+// let service = mydocker.getService("1abafr4fqtp038d0l6tn6lpde")
 
 
 
 
-// mydocker.listServices({ 'all': true }, function (err, containers) {
+
+// mydocker.listServices({ 'all': true, filters: JSON.stringify() }, function (err, containers) {
 //     if (err) {
 //         console.log(err)
 //     }
@@ -99,13 +124,13 @@ container.top({ ps_args: "-e" }, function (err, data) {
 //     console.log(containers)
 // })
 
-// mydocker.info(function (err, data) {
-//     if (err) {
-//         throw err;
-//     }
+mydocker.info(function (err, data) {
+    if (err) {
+        throw err;
+    }
 
-//     console.log('docker info %s', data);
-// });
+    console.log('docker info %s', data);
+});
 
 
 

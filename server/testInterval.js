@@ -1,7 +1,7 @@
 
 
-setInterval(function () {
-    console.log("maaaa")
-}, 1000);
+// setInterval(function () {
+//     console.log("maaaa")
+// }, 1000);
 
-console.log('now')
+// console.log('now')

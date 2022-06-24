@@ -26,29 +26,9 @@ const path = require('path');
 const { alertClasses } = require('@mui/material');
 const { application } = require('express');
 
-var crypto = require('crypto'),
-    algorithm = 'aes-256-ctr',
-    password = SECRET,
-    iv = IV;
 
-function encrypt(text) {
-    var cipher = crypto.createCipheriv(algorithm, password, iv)
-    var crypted = cipher.update(text, 'utf8', 'hex')
-    crypted += cipher.final('hex');
-    return crypted;
-}
-
-function decrypt(text) {
-    var decipher = crypto.createDecipheriv(algorithm, password, iv)
-    var dec = decipher.update(text, 'hex', 'utf8')
-    dec += decipher.final('utf8');
-    return dec;
-}
-
-
-
-router.post('/containersinfo', requireLogin, (req, res) => {
-    const { domainName, nickname } = req.body
+router.post('/GetProcesses', requireLogin, (req, res) => {
+    const { idContainer, domainName, nickname } = req.body
     var mydocker = new Docker({
         host: domainName,
         port: 2376,
@@ -56,58 +36,31 @@ router.post('/containersinfo', requireLogin, (req, res) => {
         cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
         key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
     })
-    mydocker.listContainers({ all: true }, function (err, containers) {
-        res.json({ containers })
-    })
-})
 
-
-router.post('/containersfullinfo', requireLogin, (req, res) => {
-    const { domainName, nickname, idContainer } = req.body
-    var mydocker = new Docker({
-        host: domainName,
-        port: 2376,
-        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
-        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
-        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
-    })
     var container = mydocker.getContainer(idContainer)
-    container.inspect(function (err, data) {
-        res.json({ data })
-    })
-})
-
-
-router.post('/containersstats', requireLogin, (req, res) => {
-    const { domainName, nickname, idContainer } = req.body
-    var mydocker = new Docker({
-        host: domainName,
-        port: 2376,
-        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
-        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
-        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
-    })
-    var container = mydocker.getContainer(idContainer)
-    container.stats({ stream: false }, function (err, data) {
-        res.json({ data })
+    container.top({ ps_args: "-e" }, function (err, data) {
+        res.json({ data });
+        console.log(data)
     });
 })
 
+router.post('/FSChanges', requireLogin, (req, res) => {
+    const { idContainer, domainName, nickname } = req.body
+    var mydocker = new Docker({
+        host: domainName,
+        port: 2376,
+        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
+        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
+        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
+    })
 
-router.get('/mycontainers', requireLogin, (req, res) => {
-    Container.find({ ownedBy: req.user._id })
-        .populate("ownedBy", "host user")
-        .then(mycontainer => {
-            res.json({ mycontainer })
-        })
-        .catch(err => {
-            console.log(err)
-        })
-
+    var container = mydocker.getContainer(idContainer)
+    container.changes(function (err, changes) {
+        res.json({ changes })
+    })
 })
 
-
-router.post('/GetInfo', requireLogin, (req, res) => {
+router.post('/GetServices', requireLogin, (req, res) => {
     const { domainName, nickname } = req.body
     var mydocker = new Docker({
         host: domainName,
@@ -117,15 +70,14 @@ router.post('/GetInfo', requireLogin, (req, res) => {
         key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
     })
 
-    mydocker.info(function (err, info) {
+    mydocker.listServices({ 'all': true }, function (err, containers) {
         if (err) {
             console.log(err)
         }
         else {
-            res.json({ info })
+            res.json({ containers })
         }
     })
 })
 
 module.exports = router
-

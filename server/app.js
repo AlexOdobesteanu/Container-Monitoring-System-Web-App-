@@ -27,6 +27,25 @@ mongoose.connection.on('connected', () => {
     //             monitor.monitoringCont(result[i])
     //         }
     //     })
+
+    // })
+
+    // let job1 = schedule.scheduleJob("1", "*/4 * * * * *", function () {
+    //     var resultNodes = getData.gettingDataNode()
+    //     resultNodes.then(function (resultNodes) {
+    //         for (i = 0; i < resultNodes.length; i++) {
+    //             monitor.monitoringNode(resultNodes[i])
+    //         }
+    //     })
+    // })
+
+    // let job2 = schedule.scheduleJob("2", "*/4 * * * * *", function () {
+    //     var resultAlerts = getData.gettingAlerts()
+    //     resultAlerts.then(function (resultAlerts) {
+    //         for (i = 0; i < resultAlerts.length; i++) {
+    //             monitor.startAlertTasks(resultAlerts[i])
+    //         }
+    //     })
     // })
 
     // monitor.monitoringCont()
@@ -45,6 +64,7 @@ require('./models/alert')
 require('./models/alertNotification')
 require('./models/generaldata')
 require('./models/AlertHistory')
+require('./models/Nodes')
 
 app.use(express.json())
 app.use(cors())
@@ -54,7 +74,13 @@ app.use(fileUpload())
 
 app.use(require("./routes/auth"))
 app.use(require('./routes/container'))
-
+app.use(require('./routes/alerts'))
+app.use(require('./routes/containerInteraction'))
+app.use(require('./routes/containerStats'))
+app.use(require('./routes/nodeInteraction'))
+app.use(require('./routes/uploadDownload'))
+app.use(require('./routes/cluster'))
+app.use(require('./routes/dataCollecting'))
 
 
 app.listen(PORT, () => {

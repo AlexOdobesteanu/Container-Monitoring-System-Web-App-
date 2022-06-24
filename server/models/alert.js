@@ -11,10 +11,27 @@ const alertSchema = new mongoose.Schema({
         type: ObjectId,
         ref: "Cluster"
     },
+    ClusterName:
+    {
+        type: String,
+    },
     idContainer:
     {
         type: String,
         required: true
+    },
+    ContainerName:
+    {
+        type: String,
+    },
+    NodeName:
+    {
+        type: String
+    },
+    idNode:
+    {
+        type: ObjectId,
+        ref: "Nodes"
     },
     MemPercAlert:
     {

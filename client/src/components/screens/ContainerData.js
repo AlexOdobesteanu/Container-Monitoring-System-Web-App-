@@ -9,7 +9,6 @@ import { HashLoader } from 'react-spinners';
 import M from 'materialize-css'
 import { Collapsible, CollapsibleItem, Icon, TextInput, Button, Modal, Checkbox } from 'react-materialize'
 
-
 import "../../App.css"
 import { internal_resolveProps } from '@mui/utils';
 
@@ -65,7 +64,6 @@ const ContainerData = () => {
     const nickname = location.state.nickname
     const [FSChanges, setFSChanges] = useState([])
     const [Processes, setProcesses] = useState([])
-
     const [loadingFS, setLoadingFS] = useState(true)
 
 
@@ -109,6 +107,8 @@ const ContainerData = () => {
     const getFSChanges = () => {
 
     }
+
+
 
 
     const renderNetworks = () => {
@@ -222,47 +222,29 @@ const ContainerData = () => {
         setGraph(false)
     }
 
-    const renderProcesses = (list) => {
-
-        return (
-            <div>
-                {
-                    list.map(item => {
-                        return (
-                            <div>
-                                <b id='blue-text'>{item}</b>
-                            </div>
-                        )
-                    })
-                }
-
-
-            </div>
-        )
-    }
-
-    const renderTitles = (list) => {
-
-        return (
-            <div>
-                {
-                    list.map(item => {
-                        return (
-                            <div>
-                                <b id='blue-text'>{item}</b>
-                            </div>
-                        )
-                    })
-                }
-
-            </div>
-        )
-    }
-
     useInterval2(() => {
-        console.log("alex")
-
-
+        fetch('/GetProcesses',
+            {
+                method: "post",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    {
+                        idContainer: idContainer,
+                        domainName: domainName,
+                        nickname: nickname
+                    }
+                )
+            }
+        ).then(res => res.json())
+            .then(result => {
+                if (result != null) {
+                    setProcesses(result.data)
+                }
+                // console.log(result.data)
+            })
 
     }, isRunning2 ? delay : null);
 
@@ -287,6 +269,7 @@ const ContainerData = () => {
                 if (result != null) {
                     setProcesses(result.data)
                 }
+                console.log(result)
                 // console.log(result.data)
             })
 
@@ -464,10 +447,11 @@ const ContainerData = () => {
             }
         ).then(res => res.json())
             .then(result => {
+                console.log(result)
                 if (result != null) {
                     setProcesses(result.data)
                 }
-                console.log(result.data)
+                // console.log(result.data)
             })
 
         fetch('/FSChanges',
@@ -488,7 +472,6 @@ const ContainerData = () => {
         ).then(res => res.json())
             .then(result => {
                 console.log('bbb')
-                console.log(result.changes)
 
                 setFSChanges(result.changes)
             })
@@ -508,7 +491,7 @@ const ContainerData = () => {
         }).then(res => res.json())
             .then(result => {
                 setData(result.data)
-                // console.log(result.data)
+                console.log(result.data)
                 setNetworks(Object.keys(result.data.NetworkSettings.Networks))
                 setLoading(true)
                 setPorts(Object.keys(result.data.NetworkSettings.Ports))
@@ -615,26 +598,35 @@ const ContainerData = () => {
                                                     </button>}
                                                 >
                                                     {/* <b id='white-text' style={{ fontSize: '20px' }}>Total Processes: <b id='blue-text'> {Processes.Processes[0].length}</b></b> */}
-                                                    <div style={{ display: 'flex' }}>
-                                                        <div style={{ flex: '1 1 0px' }}>
-                                                            <br></br>
-                                                            <b id='white-text' style={{ fontSize: '20px' }}>Processes:</b>
-                                                            <br></br>
+                                                    <div>
+                                                        <div>
+
                                                             <div>
-                                                                {
-                                                                    renderProcesses(Processes.Processes[0])
-                                                                }
+                                                                <table style={{ border: '2px solid white' }}>
+                                                                    <tr>
+                                                                        <th>PID</th>
+                                                                        <th>TTY</th>
+                                                                        <th>TIME</th>
+                                                                        <th>CMD</th>
+                                                                    </tr>
+
+                                                                    {
+                                                                        Processes.Processes?.map(item => {
+                                                                            return (
+                                                                                <tr style={{ border: '2px solid white' }}>
+
+                                                                                    <td id='blue-text'><b>{item["0"]}</b></td>
+                                                                                    <td id='blue-text'><b>{item["1"]}</b></td>
+                                                                                    <td id='blue-text'><b>{item["2"]}</b></td>
+                                                                                    <td id='blue-text'><b>{item["3"]}</b></td>
+
+                                                                                </tr>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </table>
 
                                                             </div>
-                                                        </div>
-
-                                                        <div style={{ flex: '1 1 0px' }}>
-                                                            <br></br>
-                                                            <b id='white-text' style={{ fontSize: '20px' }}>Titles:</b>
-                                                            <br></br>
-
-                                                            {renderTitles(Processes.Titles)}
-
                                                         </div>
                                                     </div>
 
@@ -725,7 +717,7 @@ const ContainerData = () => {
                     </div >)
                     : (<div style={{
                         background: "rgb(40,44,52)",
-                        minHeight: '540vh',
+                        minHeight: '570vh',
                         overflow: 'auto'
                     }}>
                         {
@@ -783,6 +775,68 @@ const ContainerData = () => {
                                                 <button className="btn waves-effect waves-light" id='blue-button' onClick={() => showGraph()}>
                                                     View resource usage
                                                 </button>
+                                                <Modal
+                                                    actions={[
+                                                        <div id='modal-bottom'>
+                                                            <Button flat modal="close" node="button" waves="green" id='red-button'>Close</Button>
+                                                        </div>
+                                                    ]}
+                                                    bottomSheet={false}
+                                                    fixedFooter={true}
+                                                    header="Current Processes"
+                                                    id="Modal-10"
+                                                    open={false}
+                                                    options={{
+                                                        dismissible: true,
+                                                        endingTop: '10%',
+                                                        inDuration: 250,
+                                                        onCloseEnd: null,
+                                                        onCloseStart: null,
+                                                        onOpenEnd: null,
+                                                        onOpenStart: null,
+                                                        opacity: 0.5,
+                                                        outDuration: 250,
+                                                        preventScrolling: false,
+                                                        startingTop: '4%'
+                                                    }}
+                                                    trigger={<button style={{ marginLeft: '20px' }} className="btn waves-effect waves-light" id='blue-button'>
+                                                        View processes
+                                                    </button>}
+                                                >
+                                                    {/* <b id='white-text' style={{ fontSize: '20px' }}>Total Processes: <b id='blue-text'> {Processes.Processes[0].length}</b></b> */}
+                                                    <div>
+                                                        <div>
+
+                                                            <div>
+                                                                <table style={{ border: '2px solid white' }}>
+                                                                    <tr>
+                                                                        <th>PID</th>
+                                                                        <th>TTY</th>
+                                                                        <th>TIME</th>
+                                                                        <th>CMD</th>
+                                                                    </tr>
+
+                                                                    {
+                                                                        Processes.Processes?.map(item => {
+                                                                            return (
+                                                                                <tr style={{ border: '2px solid white' }}>
+
+                                                                                    <td id='blue-text'><b>{item["0"]}</b></td>
+                                                                                    <td id='blue-text'><b>{item["1"]}</b></td>
+                                                                                    <td id='blue-text'><b>{item["2"]}</b></td>
+                                                                                    <td id='blue-text'><b>{item["3"]}</b></td>
+
+                                                                                </tr>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </table>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </Modal>
                                                 <Modal
                                                     actions={[
                                                         <div id='modal-bottom'>
@@ -886,7 +940,7 @@ const ContainerData = () => {
 
 
                                     <div style={{
-                                        margin: "750px auto",
+                                        margin: "900px auto",
                                         height: 800,
                                         width: 800,
                                         position: 'absolute', left: '25%', top: '80%',

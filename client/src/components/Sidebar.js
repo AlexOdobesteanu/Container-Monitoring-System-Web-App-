@@ -97,7 +97,7 @@ const Item = styled(NavLink)`
   padding: 1.5rem 0;
   cursor: pointer;
   display: flex;
-  padding-left: 1rem;
+  padding-left: 0.5rem;
   &:hover {
     border-right: 2px solid white;
     img {

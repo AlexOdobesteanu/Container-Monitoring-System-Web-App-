@@ -24,6 +24,14 @@ const alertHistorySchema = new mongoose.Schema({
     {
         type: String
     },
+    NodeId:
+    {
+        type: String,
+    },
+    NodeName:
+    {
+        type: String
+    },
     TypeOfNotification:
     {
         type: String,

@@ -1,0 +1,14 @@
+version: '3.4'
+services:
+  remote-api:
+    image: 'kekru/docker-remote-api-tls:v0.4.0'
+    ports:
+      - '2376:443'
+    environment:
+      - CREATE_CERTS_WITH_PW=alex
+      - CERT_EXPIRATION_DAYS=365
+      - CA_EXPIRATION_DAYS=900
+      - CERT_HOSTNAME=remote-api.20-218-72-178.nip.io
+    volumes:
+      - /data/certs
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'

@@ -82,6 +82,8 @@ const ClusterInfo = () => {
     const idCluster = location.state.idCluster
     const domainName = location.state.domainName
     const nickname = location.state.nickname
+    const idNode = location.state.idNode
+    const ClusterName = location.state.ClusterName
 
     const seeRunning = () => {
         setSelectedExit(false)
@@ -102,28 +104,28 @@ const ClusterInfo = () => {
         setSelectedPause(!selectedPause)
     }
 
-    const renderServices = () => {
-        fetch('/GetServices',
-            {
-                method: "post",
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(
-                    {
-                        domainName: domainName,
-                        nickname: nickname
-                    }
-                )
-            }
-        ).then(res => res.json())
-            .then(result => {
-                console.log(result)
-                setServices(result.containers)
-                setShowServices(true)
-            })
-    }
+    // const renderServices = () => {
+    //     fetch('/GetServices',
+    //         {
+    //             method: "post",
+    //             headers: {
+    //                 "Authorization": "Bearer " + localStorage.getItem("jwt"),
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify(
+    //                 {
+    //                     domainName: domainName,
+    //                     nickname: nickname
+    //                 }
+    //             )
+    //         }
+    //     ).then(res => res.json())
+    //         .then(result => {
+    //             console.log(result)
+    //             setServices(result.containers)
+    //             setShowServices(true)
+    //         })
+    // }
 
 
 
@@ -350,6 +352,9 @@ const ClusterInfo = () => {
                     {
                         idCluster: idCluster,
                         idContainer: id,
+                        idNode: idNode,
+                        NodeName: nickname,
+                        ClusterName: ClusterName,
                         ContainerName: names,
                         MemPercAlert: MemoryPerc,
                         MemUsedAlert: MemoryUsed,
@@ -1133,25 +1138,25 @@ const ClusterInfo = () => {
 
     useInterval(() => {
 
-        fetch('/GetServices',
-            {
-                method: "post",
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("jwt"),
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(
-                    {
-                        domainName: domainName,
-                        nickname: nickname
-                    }
-                )
-            }
-        ).then(res => res.json())
-            .then(result => {
-                console.log(result)
-                setServices(result.containers)
-            })
+        // fetch('/GetServices',
+        //     {
+        //         method: "post",
+        //         headers: {
+        //             "Authorization": "Bearer " + localStorage.getItem("jwt"),
+        //             "Content-Type": "application/json"
+        //         },
+        //         body: JSON.stringify(
+        //             {
+        //                 domainName: domainName,
+        //                 nickname: nickname
+        //             }
+        //         )
+        //     }
+        // ).then(res => res.json())
+        //     .then(result => {
+        //         console.log(result)
+        //         setServices(result.containers)
+        //     })
 
         fetch("/containersinfo", {
             method: "post",
@@ -1167,43 +1172,11 @@ const ClusterInfo = () => {
         }).then(res => res.json())
             .then(result => {
                 setData(result.containers)
-
-
                 let counter_running = 0
                 let counter_exited = 0
                 let counter_paused = 0
-                // setAux({})
-                // var dict = {}
                 if (result.containers != null) {
                     for (let i = 0; i < result.containers.length; i++) {
-                        // fetch("/GetAlertsForContainer", {
-                        //     method: "post",
-                        //     headers:
-                        //     {
-                        //         "Authorization": "Bearer " + localStorage.getItem("jwt"),
-                        //         "Content-Type": "application/json"
-                        //     },
-                        //     body: JSON.stringify(
-                        //         {
-                        //             idCluster: idCluster,
-                        //             idContainer: result.containers[i].Id
-                        //         }
-                        //     )
-
-                        // })
-                        //     .then(res2 => res2.json())
-                        //     .then(result2 => {
-                        //         dict[result.containers[i].Id.toString()] = result2.containerNotifications.length
-                        //         // console.log(dict)
-
-
-
-
-
-                        //     })
-                        // setAux(dict)
-
-
 
                         if (result.containers[i].State == 'running') {
                             counter_running++
@@ -1215,7 +1188,6 @@ const ClusterInfo = () => {
                             counter_paused++
                         }
                     }
-
                 }
 
                 setRunningCount(counter_running)
@@ -1233,6 +1205,9 @@ const ClusterInfo = () => {
 
 
     useEffect(() => {
+
+        console.log(idNode)
+
         fetch("/containersinfo", {
             method: "post",
             headers:
@@ -1298,10 +1273,12 @@ const ClusterInfo = () => {
                                     maxWidth: "900px",
                                     textAlign: "center"
                                 }}>
-                                    <b id='white-text' style={{ fontSize: '20px' }}>Cluster nickname: <b id='blue-text' style={{ fontSize: '20px' }}>{nickname}</b></b>
-                                    <br></br>
-                                    <b id='white-text' style={{ fontSize: '20px' }}>Id: <b id='blue-text' style={{ fontSize: '20px' }}>{idCluster}</b></b>
+                                    <div>{idNode != null && ClusterName != null ? <b id='white-text' style={{ fontSize: '20px' }}>Node name: <b id='blue-text' style={{ fontSize: '20px' }}>{nickname}</b></b> : <></>} </div>
 
+                                    <div>{idNode != null ? <><b id='white-text' style={{ fontSize: '20px' }}>Node ID: <b id='blue-text' style={{ fontSize: '20px' }}>{idNode}</b></b></> : <></>}</div>
+                                    <div>{ClusterName != null ? <><br></br><b id='white-text' style={{ fontSize: '20px' }}>Cluster Name: <b id='blue-text' style={{ fontSize: '20px' }}>{ClusterName}</b></b></> : <><b id='white-text' style={{ fontSize: '20px' }}>Cluster Name: <b id='blue-text' style={{ fontSize: '20px' }}>{nickname}</b></b></>}</div>
+
+                                    <b id='white-text' style={{ fontSize: '20px' }}>Cluster Id: <b id='blue-text' style={{ fontSize: '20px' }}>{idCluster}</b></b>
                                 </div>
 
 
@@ -1401,62 +1378,90 @@ const ClusterInfo = () => {
 
 
                                 </div>
-                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '30px', marginBottom: '30px' }}>
-                                    <Link to="/generaldata" state={{
-                                        idCluster: idCluster,
-                                        domainName: domainName,
-                                        nickname: nickname
-                                    }}>
 
-                                        <Button id='blue-button'>View General Data</Button>
+                                <div>
+                                    {
+                                        idNode != null && ClusterName != null ?
+                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '30px', marginBottom: '30px' }}>
+                                                <Link to="/generaldata" state={{
+                                                    idCluster: idCluster,
+                                                    domainName: domainName,
+                                                    nickname: nickname,
+                                                    idNode: idNode,
+                                                    NodeName: nickname
+                                                }}>
 
-                                    </Link>
+                                                    <Button id='blue-button'>View General Data</Button>
+
+                                                </Link>
+                                            </div>
+                                            :
+                                            <>
+                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '30px', marginBottom: '30px' }}>
+                                                    <Link to="/generaldata" state={{
+                                                        idCluster: idCluster,
+                                                        domainName: domainName,
+                                                        nickname: nickname,
+                                                        idNode: "",
+                                                        NodeName: nickname
+                                                    }}>
+
+                                                        <Button id='blue-button'>View General Data</Button>
+
+                                                    </Link>
+                                                </div>
+                                            </>
+                                    }
                                 </div>
+
                                 <div style={{ marginLeft: '190px', marginRight: '190px' }}>
 
 
                                     {
                                         showServices ? <>
 
-                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '30px', marginBottom: '30px' }}>
+                                            {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '30px', marginBottom: '30px' }}>
                                                 <Button id='blue-button' onClick={() => { setShowServices(false) }}>View Less</Button>
-                                            </div>
+                                            </div> */}
                                             <>
                                                 {
-                                                    Services.length == 0 ? <b id='white-text' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '20px', marginBottom: '30px' }}> no Services</b> : <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', textAlign: 'center', alignItems: 'center', justifyContent: 'center', marginBottom: '30px' }}>
-                                                        {
-                                                            Services.map(item => {
-                                                                return (
-                                                                    <>
-                                                                        <div class="card horizontal" style={{ flex: '1 1 0px' }}>
-                                                                            <div class="card-image">
-                                                                            </div>
-                                                                            <div class="card-stacked">
-                                                                                <div class="card-content">
-                                                                                    <p id='white-text'>
-                                                                                        Type:<b style={{ color: 'rgb(32,151,207)' }}> Service</b>
-                                                                                    </p>
-                                                                                    <p id='white-text'>Created At: <b style={{ color: 'rgb(32,151,207)' }}>{new Date(item.CreatedAt).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
-                                                                                    <p id='white-text'>Updated At: <b style={{ color: 'rgb(32,151,207)' }}>{new Date(item.UpdatedAt).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
-                                                                                    <p id='white-text'>Name: <b id='green-text'> {item.Spec["Name"]}</b></p>
-                                                                                    <p id='white-text'>Replicas: <b id='green-text'> {item.Spec["Mode"]["Replicated"]["Replicas"]}</b></p>
-                                                                                    {/* <p id='white-text'>ID: <b style={{ color: 'rgb(32,151,207)' }}> {item.Id}</b></p> */}
-                                                                                    <p id='white-text'>Image: <b style={{ color: 'rgb(32,151,207)' }}>{item.Spec["TaskTemplate"]["ContainerSpec"]["Image"].split("@")[0]}</b></p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </>
+                                                    // Services.length == 0 ? <b id='white-text' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '20px', marginBottom: '30px' }}> no Services</b> : <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', textAlign: 'center', alignItems: 'center', justifyContent: 'center', marginBottom: '30px' }}>
+                                                    //     {
+                                                    //         Services.map(item => {
+                                                    //             return (
+                                                    //                 <>
+                                                    //                     <div class="card horizontal" style={{ flex: '1 1 0px' }}>
+                                                    //                         <div class="card-image">
+                                                    //                         </div>
+                                                    //                         <div class="card-stacked">
+                                                    //                             <div class="card-content">
+                                                    //                                 <p id='white-text'>
+                                                    //                                     Type:<b style={{ color: 'rgb(32,151,207)' }}> Service</b>
+                                                    //                                 </p>
+                                                    //                                 <p id='white-text'>Created At: <b style={{ color: 'rgb(32,151,207)' }}>{new Date(item.CreatedAt).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
+                                                    //                                 <p id='white-text'>Updated At: <b style={{ color: 'rgb(32,151,207)' }}>{new Date(item.UpdatedAt).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b></p>
+                                                    //                                 <p id='white-text'>Name: <b id='green-text'> {item.Spec["Name"]}</b></p>
+                                                    //                                 <p id='white-text'>Replicas: <b id='green-text'> {item.Spec["Mode"]["Replicated"]["Replicas"]}</b></p>
+                                                    //                                 {/* <p id='white-text'>ID: <b style={{ color: 'rgb(32,151,207)' }}> {item.Id}</b></p> */}
+                                                    //                                 <p id='white-text'>Image: <b style={{ color: 'rgb(32,151,207)' }}>{item.Spec["TaskTemplate"]["ContainerSpec"]["Image"].split("@")[0]}</b></p>
+                                                    //                             </div>
+                                                    //                         </div>
+                                                    //                     </div>
+                                                    //                 </>
 
-                                                                )
-                                                            })
-                                                        }
-                                                    </div>
+                                                    //             )
+                                                    //         })
+                                                    //     }
+                                                    // </div>
                                                 }
                                             </>
 
-                                        </> : <><div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '30px', marginBottom: '30px' }}>
-                                            <Button id='blue-button' onClick={() => renderServices()}>View Services</Button>
-                                        </div></>
+                                        </> :
+                                            <>
+                                                {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '30px', marginBottom: '30px' }}>
+                                                    <Button id='blue-button' onClick={() => renderServices()}>View Services</Button>
+                                                </div> */}
+                                            </>
                                     }
 
                                     {

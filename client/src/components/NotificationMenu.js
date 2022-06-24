@@ -50,8 +50,8 @@ const NotificationMenu = ({ anchorEl, handleClose, open, menuItems }) => {
             )
         }).then(res => res.json())
             .then(result => {
-                console.log(result.mycluster[0])
-                navigate('/clusterinfo', {
+                // console.log(result.mycluster[0])
+                navigate('/nodes', {
                     state: {
                         idCluster: idCluster,
                         domainName: result.mycluster[0].domainName,
@@ -161,6 +161,8 @@ const NotificationMenu = ({ anchorEl, handleClose, open, menuItems }) => {
                                             <br></br>
                                             {/* <b style={{ color: '#d32d2f' }} >Container ID: </b><b>{item.idContainer}</b>
                                             <br></br> */}
+                                            <b style={{ color: '#d32d2f' }} >Node Name: </b><b>{item.NodeName}</b>
+                                            <br></br>
                                             <b style={{ color: '#d32d2f' }} >Container Name: </b><b>{item.ContainerName}</b>
                                             <br></br>
                                             <b style={{ color: '#d32d2f' }} >Date: </b><b>{new Date(item.DateOfNotification).toUTCString([], { hour: '2-digit', minute: '2-digit' })}</b>

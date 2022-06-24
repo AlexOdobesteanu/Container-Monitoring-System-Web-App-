@@ -10,6 +10,7 @@ import { IconButton } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
+import Home from '../logos/home-solid.svg';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -22,6 +23,7 @@ import NotificationMenu from './NotificationMenu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ConfirmDialog from './screens/ConfirmDialog'
+
 import "../App.css"
 
 
@@ -123,7 +125,7 @@ const NavBar = () => {
                     <Tooltip title={<Typography fontSize={15}>Your Account</Typography>}>
                         <div style={{ marginTop: '10px' }}>
 
-                            <Link to="/allclusters" id="white-text">
+                            <Link to="/myaccount" id="white-text">
 
 
                                 <AccountCircleIcon style={{ fontSize: '35px', color: 'white' }} />
@@ -178,6 +180,9 @@ const NavBar = () => {
         } else {
             console.log(dispatch)
             return [
+
+
+                <li className='nav-elem'><Link to="/" id="white-text"><img src={Home} className="imgInverted" style={{ width: '30px', height: '30px', marginTop: '18px' }}></img></Link></li>,
                 <li className='nav-elem'><Link to="/signin" id="white-text">Login</Link></li>,
                 <li className='nav-elem'><Link to="/signup" id="white-text">Signup</Link></li>
             ]

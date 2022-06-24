@@ -9,6 +9,11 @@ Link {
   font-family: 'Abril Fatface', cursive;
 } */
 
+.imgInverted {
+  -webkit-filter: invert(100%);
+  /* Safari/Chrome */
+  filter: invert(100%);
+}
 
 body::-webkit-scrollbar {
   width: 15px;

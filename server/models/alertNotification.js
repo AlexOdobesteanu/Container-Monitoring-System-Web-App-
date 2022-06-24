@@ -13,12 +13,20 @@ const alertNotificationSchema = new mongoose.Schema({
     },
     ClusterName:
     {
-        type: String
+        type: String,
     },
     idContainer:
     {
         type: String,
         required: true
+    },
+    NodeName:
+    {
+        type: String
+    },
+    NodeId:
+    {
+        type: String
     },
     ContainerName:
     {

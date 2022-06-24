@@ -151,12 +151,20 @@ const AllClusters = () => {
                                     </button>
                                     <br></br>
                                     <br></br>
-                                    <Link to="/clusterinfo" state={{
+                                    {/* <Link to="/clusterinfo" state={{
                                         idCluster: item._id,
                                         domainName: item.domainName,
                                         nickname: item.nickname
                                     }}>
                                         <button class="btn waves-effect waves-light green" id='blue-button'>View Full Details</button>
+                                    </Link> */}
+
+                                    <Link to="/nodes" state={{
+                                        idCluster: item._id,
+                                        domainName: item.domainName,
+                                        nickname: item.nickname
+                                    }}>
+                                        <button class="btn waves-effect waves-light green" id='blue-button'>View Nodes in Swarm</button>
                                     </Link>
                                     <br></br>
                                     <br></br>

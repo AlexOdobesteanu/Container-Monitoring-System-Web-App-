@@ -26,6 +26,14 @@ const generaldataSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    idNode:
+    {
+        type: String,
+    },
+    NodeName:
+    {
+        type: String
+    },
     MemPerc:
     {
         type: [String]

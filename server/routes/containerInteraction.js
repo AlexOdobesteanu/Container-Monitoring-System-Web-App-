@@ -26,44 +26,9 @@ const path = require('path');
 const { alertClasses } = require('@mui/material');
 const { application } = require('express');
 
-var crypto = require('crypto'),
-    algorithm = 'aes-256-ctr',
-    password = SECRET,
-    iv = IV;
 
-function encrypt(text) {
-    var cipher = crypto.createCipheriv(algorithm, password, iv)
-    var crypted = cipher.update(text, 'utf8', 'hex')
-    crypted += cipher.final('hex');
-    return crypted;
-}
-
-function decrypt(text) {
-    var decipher = crypto.createDecipheriv(algorithm, password, iv)
-    var dec = decipher.update(text, 'hex', 'utf8')
-    dec += decipher.final('utf8');
-    return dec;
-}
-
-
-
-router.post('/containersinfo', requireLogin, (req, res) => {
-    const { domainName, nickname } = req.body
-    var mydocker = new Docker({
-        host: domainName,
-        port: 2376,
-        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
-        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
-        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
-    })
-    mydocker.listContainers({ all: true }, function (err, containers) {
-        res.json({ containers })
-    })
-})
-
-
-router.post('/containersfullinfo', requireLogin, (req, res) => {
-    const { domainName, nickname, idContainer } = req.body
+router.post('/StopContainer', requireLogin, (req, res) => {
+    const { idContainer, domainName, nickname } = req.body
     var mydocker = new Docker({
         host: domainName,
         port: 2376,
@@ -72,60 +37,83 @@ router.post('/containersfullinfo', requireLogin, (req, res) => {
         key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
     })
     var container = mydocker.getContainer(idContainer)
-    container.inspect(function (err, data) {
-        res.json({ data })
-    })
-})
-
-
-router.post('/containersstats', requireLogin, (req, res) => {
-    const { domainName, nickname, idContainer } = req.body
-    var mydocker = new Docker({
-        host: domainName,
-        port: 2376,
-        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
-        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
-        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
-    })
-    var container = mydocker.getContainer(idContainer)
-    container.stats({ stream: false }, function (err, data) {
-        res.json({ data })
-    });
-})
-
-
-router.get('/mycontainers', requireLogin, (req, res) => {
-    Container.find({ ownedBy: req.user._id })
-        .populate("ownedBy", "host user")
-        .then(mycontainer => {
-            res.json({ mycontainer })
-        })
-        .catch(err => {
-            console.log(err)
-        })
-
-})
-
-
-router.post('/GetInfo', requireLogin, (req, res) => {
-    const { domainName, nickname } = req.body
-    var mydocker = new Docker({
-        host: domainName,
-        port: 2376,
-        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
-        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
-        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
-    })
-
-    mydocker.info(function (err, info) {
+    container.stop((err, data) => {
         if (err) {
-            console.log(err)
+            return res.status(422).json({ error: "Container " + idContainer + " couldn't stop.Try again !" })
         }
         else {
-            res.json({ info })
+            return res.status(422).json({ succes: "Container " + idContainer + " stopped !" })
         }
     })
+
+})
+
+router.post('/PauseContainer', requireLogin, (req, res) => {
+    const { idContainer, domainName, nickname } = req.body
+    var mydocker = new Docker({
+        host: domainName,
+        port: 2376,
+        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
+        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
+        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
+    })
+    var container = mydocker.getContainer(idContainer)
+    container.pause(function (err, data) {
+        console.log(err)
+        // console.log(data.toString())
+        if (err) {
+            return res.status(422).json({ error: "Container " + idContainer + " couldn't pause.Try again !" })
+        }
+        else {
+            return res.status(422).json({ succes: "Container " + idContainer + " paused !" })
+        }
+    })
+
+})
+
+router.post('/UnpauseContainer', requireLogin, (req, res) => {
+    const { idContainer, domainName, nickname } = req.body
+    var mydocker = new Docker({
+        host: domainName,
+        port: 2376,
+        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
+        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
+        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
+    })
+    var container = mydocker.getContainer(idContainer)
+    container.unpause(function (err, data) {
+        console.log(err)
+        // console.log(data.toString())
+        if (err) {
+            return res.status(422).json({ error: "Container " + idContainer + " couldn't start.Try again !" })
+        }
+        else {
+            return res.status(422).json({ succes: "Container " + idContainer + " unpaused !" })
+        }
+    })
+
+})
+
+router.post('/StartContainer', requireLogin, (req, res) => {
+    const { idContainer, domainName, nickname } = req.body
+    var mydocker = new Docker({
+        host: domainName,
+        port: 2376,
+        ca: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'ca.pem'),
+        cert: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'cert.pem'),
+        key: fs.readFileSync('./configFiles/' + req.user._id.toString() + '/' + nickname + '/' + 'key.pem')
+    })
+    var container = mydocker.getContainer(idContainer)
+    container.start(function (err, data) {
+
+        if (err) {
+            return res.status(422).json({ error: "Container " + idContainer + " couldn't start.Try again !" })
+        }
+        else {
+            return res.status(422).json({ succes: "Container " + idContainer + " started !" })
+        }
+    })
+
 })
 
 module.exports = router
-

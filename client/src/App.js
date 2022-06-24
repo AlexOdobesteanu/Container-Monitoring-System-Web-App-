@@ -15,7 +15,9 @@ import ClusterInfo from './components/screens/ClusterInfo';
 import ContainerData from './components/screens/ContainerData';
 import Notification from './components/screens/Notification';
 import EditInstance from './components/screens/EditInstance';
+import Nodes from './components/screens/Nodes';
 import AlertHistory from './components/screens/AlertHistory';
+import MyAccount from './components/screens/MyAccount';
 import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import Sidebar from './components/Sidebar';
@@ -48,6 +50,10 @@ const Routing = () => {
 
             <Route path="/signup" element={<Signup></Signup>}>
 
+            </Route>
+
+            <Route path="/myaccount" element={<MyAccount></MyAccount>}>
+
 
             </Route>
 
@@ -70,6 +76,11 @@ const Routing = () => {
             </Route>
 
             <Route path="/allclusters" element={<AllClusters></AllClusters>}>
+
+
+            </Route>
+
+            <Route path="/nodes" element={<Nodes></Nodes>}>
 
 
             </Route>
